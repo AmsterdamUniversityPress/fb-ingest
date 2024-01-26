@@ -1,0 +1,9 @@
+(executable
+ (name main)
+ (preprocess (pps ppx_composer))
+ (libraries cmdliner
+            fb_ingest))
+
+(install
+ (section bin)
+  (files (main.exe as fb-ingest)))

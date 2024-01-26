@@ -1,0 +1,6 @@
+_build
+
+tags
+TAGS
+*.swo
+*.swp

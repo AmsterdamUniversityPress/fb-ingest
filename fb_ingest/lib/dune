@@ -1,0 +1,14 @@
+(library
+ (name fb_ingest)
+ (public_name fb_ingest)
+ (modules fb_ingest convert process types util)
+ (preprocess (pps ppx_composer ppx_deriving_yojson))
+ (libraries angstrom batteries csv fmt
+            ppx_deriving_yojson.runtime
+            re rresult yojson))
+
+(library
+  (name ppx_composer)
+  (modules ppx_composer)
+  (kind ppx_rewriter)
+  (libraries ppxlib))
