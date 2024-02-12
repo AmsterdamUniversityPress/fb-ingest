@@ -8,8 +8,15 @@ let validate_and_mk pattern s mk =
   let re' = Re.Perl.compile_pat pattern' in
   match Re.exec_opt re' s with
   | None -> Error (`Msg (Fmt.str "\n  patt = %s\n  target = %s\n\n" pattern s))
-  | Some m -> Ok begin match mk with
-    | `Default f -> f (Re.Group.get m 0)
+  | Some m ->
+    let m0 = Re.Group.get m 0 in
+    (* let m_all = Re.Group.all m in *)
+    Ok begin match mk with
+    | `Bool f -> f (Types.bool_of_string_nl m0)
+    | `Int f -> f (int_of_string m0)
+    | `Text f -> f m0
+    (* | `Text' f -> f m_all *)
+    | `Url f -> f (Types.mk_url m0)
   end
 
 let process (row_num, col_num) s col_name pattern mk =
@@ -23,7 +30,7 @@ let do_col (row_num, col_num) s row_t ~skip_validate =
     ("^" ^ Types.Column.validate_pattern row_t ^ "$") in
   process
     (row_num, col_num)
-    s
+    (String.trim s)
     (Types.Column.name row_t)
     validate'
     (Types.Column.mk row_t)

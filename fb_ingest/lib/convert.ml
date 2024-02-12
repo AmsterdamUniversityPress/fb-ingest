@@ -65,6 +65,8 @@ let process_row_validate row_num = function
     let* doelstelling = do_col' col_doelstelling in
     let* stichter = do_col_optional' col_stichter in
     let* historie = do_col_optional' col_historie in
+    let* beleidsplan_op_website = do_col' col_beleidsplan_op_website in
+    let* doelgroep = do_col' col_doelgroep in
 
     Ok (Fonds {
       id;
@@ -113,6 +115,8 @@ let process_row_validate row_num = function
       doelstelling;
       historie;
       stichter;
+      beleidsplan_op_website;
+      doelgroep;
     })
 
 let process_row_no_validate row_num = function
