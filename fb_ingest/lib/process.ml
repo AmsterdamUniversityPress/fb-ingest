@@ -27,3 +27,10 @@ let do_col (row_num, col_num) s row_t ~skip_validate =
     (Types.Column.name row_t)
     validate'
     (Types.Column.mk row_t)
+
+let do_col_optional (row_num, col_num) s row_t ~skip_validate =
+  if s = ""
+  then Ok None
+  else match do_col (row_num, col_num) s row_t ~skip_validate with
+    | Error e -> Error e
+    | Ok r -> Ok (Some r)

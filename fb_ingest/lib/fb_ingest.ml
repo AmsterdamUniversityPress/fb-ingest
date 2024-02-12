@@ -27,7 +27,7 @@ let to_json_no_validate csv_reader =
       | Ok record' ->
         begin match acc with
           | `List acc' -> `List (record' :: acc')
-          | _ -> failwith "hahaha"
+          | _ -> failwith "unexpected"
         end
       | Error (`Msg m) ->
         let () = Fmt.pr "%s" m in
