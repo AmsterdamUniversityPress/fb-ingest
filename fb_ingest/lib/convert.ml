@@ -62,6 +62,9 @@ let process_row_validate row_num = function
     let* bestuurslid6_voorletters = do_col_optional' col_bestuurslid6_voorletters in
     let* bestuurslid6_tussenvoegsel = do_col_optional' col_bestuurslid6_tussenvoegsel in
     let* bestuurslid6_achternaam = do_col_optional' col_bestuurslid6_achternaam in
+    let* doelstelling = do_col' col_doelstelling in
+    let* stichter = do_col_optional' col_stichter in
+    let* historie = do_col_optional' col_historie in
 
     Ok (Fonds {
       id;
@@ -107,6 +110,9 @@ let process_row_validate row_num = function
       bestuurslid6_voorletters;
       bestuurslid6_tussenvoegsel;
       bestuurslid6_achternaam;
+      doelstelling;
+      historie;
+      stichter;
     })
 
 let process_row_no_validate row_num = function

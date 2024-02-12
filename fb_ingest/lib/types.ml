@@ -1,4 +1,4 @@
-let num_cols = 43
+let num_cols = 46
 
 (* --- this sucks a bit -- deriving yojson makes `Id of string` into ["Id", "xxx"], and we just want "xxx". So we need to use this on every type which has a constructor. *)
 
@@ -209,6 +209,22 @@ type bestuurslid6_achternaam = Bestuurslid6Achternaam of string
 let mk_bestuurslid6_achternaam x = Bestuurslid6Achternaam x
 let bestuurslid6_achternaam_to_yojson x = fix_json_variant bestuurslid6_achternaam_to_yojson x
 
+type doelstelling = Doelstelling of string
+[@@deriving yojson]
+let mk_doelstelling x = Doelstelling x
+let doelstelling_to_yojson x = fix_json_variant doelstelling_to_yojson x
+
+type stichter = Stichter of string
+[@@deriving yojson]
+let mk_stichter x = Stichter x
+let stichter_to_yojson x = fix_json_variant stichter_to_yojson x
+
+type historie = Historie of string
+[@@deriving yojson]
+let mk_historie x = Historie x
+let historie_to_yojson x = fix_json_variant historie_to_yojson x
+
+
 let mk_naam_moeder_organisatie x = NaamMoederOrganisatie x
 let naam_moeder_organisatie_to_yojson x = fix_json_variant naam_moeder_organisatie_to_yojson x
 
@@ -269,6 +285,9 @@ type fonds = Fonds of {
   bestuurslid6_voorletters: bestuurslid6_voorletters option;
   bestuurslid6_tussenvoegsel: bestuurslid6_tussenvoegsel option;
   bestuurslid6_achternaam: bestuurslid6_achternaam option;
+  doelstelling: doelstelling;
+  stichter: stichter option;
+  historie: historie option;
 }
 [@@deriving yojson]
 
@@ -503,4 +522,19 @@ let col_bestuurslid6_achternaam = Column.Column {
   name = "bestuurslid6_achternaam";
   validate_pattern = validate_text;
   mk = `Default mk_bestuurslid6_achternaam;
+}
+let col_doelstelling = Column.Column {
+  name = "doelstelling";
+  validate_pattern = validate_text;
+  mk = `Default mk_doelstelling;
+}
+let col_stichter = Column.Column {
+  name = "stichter";
+  validate_pattern = validate_text;
+  mk = `Default mk_stichter;
+}
+let col_historie = Column.Column {
+  name = "historie";
+  validate_pattern = validate_text;
+  mk = `Default mk_historie;
 }
