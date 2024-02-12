@@ -1,4 +1,4 @@
-let num_cols = 48
+let num_cols = 49
 
 (* --- this sucks a bit -- deriving yojson makes `Id of string` into ["Id", "xxx"], and we just want "xxx". So we need to use this on every type which has a constructor. *)
 
@@ -236,6 +236,11 @@ let mk_doelgroep = function
   | x -> Some (Doelgroep x)
 let doelgroep_to_yojson x = fix_json_variant doelgroep_to_yojson x
 
+type doelgroep_overig = DoelgroepOverig of string
+[@@deriving yojson]
+let mk_doelgroep_overig x = DoelgroepOverig x
+let doelgroep_overig_to_yojson x = fix_json_variant doelgroep_overig_to_yojson x
+
 let mk_naam_moeder_organisatie x = NaamMoederOrganisatie x
 let naam_moeder_organisatie_to_yojson x = fix_json_variant naam_moeder_organisatie_to_yojson x
 
@@ -301,6 +306,7 @@ type fonds = Fonds of {
   historie: historie option;
   beleidsplan_op_website: beleidsplan_op_website;
   doelgroep: doelgroep option;
+  doelgroep_overig: doelgroep_overig option;
 }
 [@@deriving yojson]
 
@@ -575,4 +581,9 @@ let col_doelgroep = Column.Column {
   name = "doelgroep";
   validate_pattern = validate_text;
   mk = `Text mk_doelgroep;
+}
+let col_doelgroep_overig = Column.Column {
+  name = "doelgroep_overig";
+  validate_pattern = validate_text;
+  mk = `Text mk_doelgroep_overig;
 }

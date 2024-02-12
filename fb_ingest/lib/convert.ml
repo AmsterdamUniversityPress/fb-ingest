@@ -17,6 +17,9 @@ let process_row_validate row_num = function
     let do_col_optional' col_t =
       let () = col_num := !col_num + 1 in
       Process.do_col_optional (row_num, !col_num) (xs $ !col_num) col_t ~skip_validate:false in
+    let do_col_optional_optional' col_t =
+      let () = col_num := !col_num + 1 in
+      Process.do_col_optional_optional (row_num, !col_num) (xs $ !col_num) col_t ~skip_validate:false in
 
     let* id = do_col' col_id in
     let* naam_organisatie = do_col' col_naam_organisatie in
@@ -66,7 +69,8 @@ let process_row_validate row_num = function
     let* stichter = do_col_optional' col_stichter in
     let* historie = do_col_optional' col_historie in
     let* beleidsplan_op_website = do_col' col_beleidsplan_op_website in
-    let* doelgroep = do_col' col_doelgroep in
+    let* doelgroep = do_col_optional_optional' col_doelgroep in
+    let* doelgroep_overig = do_col_optional' col_doelgroep_overig in
 
     Ok (Fonds {
       id;
@@ -117,6 +121,7 @@ let process_row_validate row_num = function
       stichter;
       beleidsplan_op_website;
       doelgroep;
+      doelgroep_overig;
     })
 
 let process_row_no_validate row_num = function
