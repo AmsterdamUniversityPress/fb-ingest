@@ -9,28 +9,10 @@ module String = struct
     String.to_seq s
     |> Seq.flat_map f
     |> String.of_seq
-
-  let trim_front x =
-    let b = Buffer.create 0 in
-    let inside = ref false in
-    let f c =
-      let c' = if !inside then Some c else match c with
-          (* --- @todo nicer way to write this? *)
-          | x when x = BatUChar.chr 0x20 -> None
-          | x when x = BatUChar.chr 0xa0 -> None
-          | c ->
-            let () = inside := true in
-            Some c in
-      match c' with
-      | None -> ()
-      | Some c'' -> Buffer.add_string b (BatUTF8.make 1 c'') in
-    let () = BatUTF8.iter f x in
-    Buffer.contents b
-  (* --- not efficient, but works.
-   * --- this trims more characters (e.g. weird unicode spaces) than String.trim *)
-  let trim x = x
-             |> trim_front
-             |> BatString.rev
-             |> trim_front
-             |> BatString.rev
+  let trim =
+	let sp = "[ \u{a0}]" in
+	let p = Fmt.str "^%s*(.*?)%s*$" sp sp in
+	let re = Re.Perl.compile_pat p in
+	let f groups = Re.Group.get groups 1 in
+	fun x -> Re.replace re ~f x
 end
