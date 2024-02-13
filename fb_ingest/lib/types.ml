@@ -450,15 +450,15 @@ let type_organisatie_to_yojson x = fix_json_variant type_organisatie_to_yojson x
 type fonds = Fonds of {
   id: id;
   naam_organisatie: naam_organisatie;
-  categorie: categorie;
-  website: website;
+  categorie: categorie option;
+  website: website option;
   type_organisatie: type_organisatie option;
   naam_moeder_organisatie: naam_moeder_organisatie option;
-  oprichtings_datum: oprichtings_datum;
+  oprichtings_datum: oprichtings_datum option;
   rechtsvorm: rechtsvorm;
-  kvk_number: kvk_number;
-  anbi_status: anbi_status;
-  rsin: rsin;
+  kvk_number: kvk_number option;
+  anbi_status: anbi_status option;
+  rsin: rsin option;
   directeur_algemeen_geslacht: directeur_algemeen_geslacht option;
   directeur_algemeen_voorletters: directeur_algemeen_voorletters option;
   directeur_algemeen_tussenvoegsel: directeur_algemeen_tussenvoegsel option;
@@ -559,9 +559,22 @@ module Column = struct
   let mk (Column t) = t.mk
 end
 
-let validate_text = {| .+ |}
 let validate_bool = {| (?:Ja|ja|Nee|nee) |}
-let validate_url = {| (https?://)? ((\w|-|\&)+\.)* \w+ (/[\w\d]+)* (/? [\w\d-_\.]+)? (\? [\w \d & = ; ]*)? |}
+let validate_int = {| -? \d+ |}
+let validate_text = {| .+ |}
+
+let _validate_url_strict = {| (https?://)? ((\w|-)+\.)* (\w|-)+ (/ [\w \d % \( \) \. _ -]*)* (#[\w\d%-]*)? (\? [\w \d \( \) % & = ; \. -]*)? |}
+let _validate_url_full =
+  {| (?:(?:(?:https?|ftp):)?\/\/)(?:\S+(?::\S*)?@)?(?: |} ^
+  (* (?!(?:10|127)(?:\.\d{1,3}){3}) *)
+  (* (?!(?:169\.254|192\.168)(?:\.\d{1,3}){2}) *)
+  (* (?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2}) *)
+  {| (?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?: |} ^
+  "[a-z0-9\u{00a1}-\u{ffff}][a-z0-9\u{00a1}-\u{ffff}_-]{0,62})?" ^
+  "[a-z0-9\u{00a1}-\u{ffff}]\\.)+(?:[a-z\u{00a1}-\u{ffff}]" ^
+  {| {2,}\.?))(?::\d{2,5})?(?:[/?#]\S*)? |}
+
+let validate_url = _validate_url_strict
 
 let bool_of_string_nl = function
   | "Ja" -> true
@@ -572,7 +585,7 @@ let bool_of_string_nl = function
 
 let col_id = Column.Column {
   name = "id";
-  validate_pattern = {| \d+ |};
+  validate_pattern = validate_int;
   mk = `Int mk_id;
 }
 let col_naam_organisatie = Column.Column {
@@ -622,7 +635,7 @@ let col_anbi_status = Column.Column {
 }
 let col_rsin = Column.Column {
   name = "rsin";
-  validate_pattern = validate_text;
+  validate_pattern = validate_int;
   mk = `Int mk_rsin;
 }
 let col_directeur_algemeen_geslacht = Column.Column {

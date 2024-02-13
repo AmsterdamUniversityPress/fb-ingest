@@ -1,16 +1,20 @@
 let num_header_rows = 3
 
+let skip_row _n = false
+let die_on_fail = false
+
 let to_json_validate csv_reader =
   let fondsen =
     let row_num = ref (-1) in
     let f acc record =
       let () = row_num := !row_num + 1 in
+      if skip_row !row_num then acc else
       match Convert.process_row_validate !row_num record with
       (* --- reverses the order of the rows but is more efficient *)
       | Ok record' -> record' :: acc
       | Error (`Msg m) ->
-        let () = Fmt.pr "%s" m in
-        failwith "aborting" in
+        let () = Fmt.epr "%s (row=%d)@." m !row_num in
+        if die_on_fail then failwith "aborting" else acc in
     (* --- skip row header *)
     let () = for _ = 1 to num_header_rows do
         let _ = Csv.next csv_reader in ()

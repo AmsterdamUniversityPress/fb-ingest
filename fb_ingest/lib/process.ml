@@ -4,8 +4,8 @@ let reword_error_msg f = function
 
 let validate_and_mk pattern s mk =
   (* --- `re` doesn't seem to have the X flag, so we strip spaces (but not comments) manually *)
-  let pattern' = Util.strip_spaces pattern in
-  let re' = Re.Perl.compile_pat pattern' in
+  let pattern' = Util.String.strip_spaces pattern in
+  let re' = Re.Perl.compile_pat ~opts:[`Multiline] pattern' in
   match Re.exec_opt re' s with
   | None -> Error (`Msg (Fmt.str "\n  patt = %s\n  target = %s\n\n" pattern s))
   | Some m ->
@@ -30,7 +30,7 @@ let do_col (row_num, col_num) s row_t ~skip_validate =
     ("^" ^ Types.Column.validate_pattern row_t ^ "$") in
   process
     (row_num, col_num)
-    (String.trim s)
+    (Util.String.trim s)
     (Types.Column.name row_t)
     validate'
     (Types.Column.mk row_t)
