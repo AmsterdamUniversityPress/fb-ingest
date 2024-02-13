@@ -559,7 +559,9 @@ module Column = struct
   let mk (Column t) = t.mk
 end
 
-let validate_bool = {| (?:Ja|ja|Nee|nee) |}
+(* let validate_bool = {| (Ja|ja|Nee|nee) |} *)
+(* --- @todo until they fix the data *)
+let validate_bool = {| (Ja|ja|Nee|nee|Ja \s+ \& \s+ Cultuur) |}
 let validate_int = {| -? \d+ |}
 let validate_text = {| .+ |}
 
@@ -581,6 +583,8 @@ let bool_of_string_nl = function
   | "ja" -> true
   | "Nee" -> false
   | "nee" -> false
+  (* --- @todo until they fix the data *)
+  | "Ja & Cultuur" -> true
   | x -> failwith (Fmt.str "Can't convert %s to bool" x)
 
 let col_id = Column.Column {
