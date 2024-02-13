@@ -6,6 +6,7 @@
 - Install dependencies and build into a clean environment with:
 
         opam switch create fb-ingest 5.1.1
+        cd fb_ingest
         # --- this will build the binary and make it available as:
         # --- "$OPAM_SWITCH_PREFIX"/bin/fb-ingest
         # --- (for example: /home/your-user/.opam/fb-ingest/bin/fb-ingest)
