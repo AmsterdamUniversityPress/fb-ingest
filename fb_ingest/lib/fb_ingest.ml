@@ -17,12 +17,7 @@ let to_json_string csv_reader ~skip_validate =
       ~f:(fun acc record ->
           let () = row_num := !row_num + 1 in
           match Convert.process_row_no_validate !row_num record with
-          | Ok record' ->
-            (* @todo match seems redundant *)
-            begin match acc with
-              | acc' -> record' :: acc'
-              | _ -> failwith "unexpected"
-            end
+          | Ok record' -> record' :: acc
           | Error (`Msg m) ->
             let () = Fmt.pr "%s" m in
             failwith "aborting")

@@ -448,7 +448,7 @@ let website_to_yojson x = fix_json_variant website_to_yojson x
 let type_organisatie_to_yojson x = fix_json_variant type_organisatie_to_yojson x
 
 type fonds = Fonds of {
-  id: id;
+  uuid: string;
   naam_organisatie: naam_organisatie;
   categorie: categorie option;
   website: website option;

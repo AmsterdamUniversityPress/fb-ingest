@@ -5,7 +5,7 @@
  (preprocess (pps ppx_composer ppx_deriving_yojson))
  (libraries batteries csv fmt
             ppx_deriving_yojson.runtime
-            re rresult yojson))
+            re rresult uuidm yojson))
 
 (library
   (name ppx_composer)

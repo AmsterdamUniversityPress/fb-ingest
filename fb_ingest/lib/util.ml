@@ -16,3 +16,8 @@ module String = struct
 	let f groups = Re.Group.get groups 1 in
 	Re.replace re ~f x
 end
+
+let mk_random_uuid =
+  let open Uuidm in
+  let rand = Random.State.make_self_init () in
+  fun () -> to_string (v4_gen rand ())
