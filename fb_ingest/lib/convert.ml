@@ -24,7 +24,7 @@ let process_row_validate row_num = function
     let* _id = do_col' col_id in
     let uuid = Util.mk_random_uuid () in
     let* naam_organisatie = do_col' col_naam_organisatie in
-    let* categorie = do_col_optional' col_categorie in
+    let* categories = do_col_optional' col_categories in
     let* website = do_col_optional' col_website in
     let* type_organisatie = do_col_optional' col_type_organisatie in
     let* naam_moeder_organisatie = do_col_optional' col_naam_moeder_organisatie in
@@ -37,34 +37,79 @@ let process_row_validate row_num = function
     let* directeur_algemeen_voorletters = do_col_optional' col_directeur_algemeen_voorletters in
     let* directeur_algemeen_tussenvoegsel = do_col_optional' col_directeur_algemeen_tussenvoegsel in
     let* directeur_algemeen_achternaam = do_col_optional' col_directeur_algemeen_achternaam in
+    let directeur_algemeen = mk_directeur_algemeen_option
+        directeur_algemeen_geslacht
+        directeur_algemeen_voorletters
+        directeur_algemeen_tussenvoegsel
+        directeur_algemeen_achternaam
+    in
     let* bestuursvoorzitter_geslacht = do_col_optional' col_bestuursvoorzitter_geslacht in
     let* bestuursvoorzitter_voorletters = do_col_optional' col_bestuursvoorzitter_voorletters in
     let* bestuursvoorzitter_tussenvoegsel = do_col_optional' col_bestuursvoorzitter_tussenvoegsel in
     let* bestuursvoorzitter_achternaam = do_col_optional' col_bestuursvoorzitter_achternaam in
+    let bestuursvoorzitter = mk_bestuursvoorzitter_option
+        bestuursvoorzitter_geslacht
+        bestuursvoorzitter_voorletters
+        bestuursvoorzitter_tussenvoegsel
+        bestuursvoorzitter_achternaam in
     let* bestuurssecretaris_geslacht = do_col_optional' col_bestuurssecretaris_geslacht in
     let* bestuurssecretaris_voorletters = do_col_optional' col_bestuurssecretaris_voorletters in
     let* bestuurssecretaris_tussenvoegsel = do_col_optional' col_bestuurssecretaris_tussenvoegsel in
     let* bestuurssecretaris_achternaam = do_col_optional' col_bestuurssecretaris_achternaam in
+    let bestuurssecretaris = mk_bestuurssecretaris_option
+      bestuurssecretaris_geslacht
+      bestuurssecretaris_voorletters
+      bestuurssecretaris_tussenvoegsel
+      bestuurssecretaris_achternaam in
     let* bestuurspenningmeester_geslacht = do_col_optional' col_bestuurspenningmeester_geslacht in
     let* bestuurspenningmeester_voorletters = do_col_optional' col_bestuurspenningmeester_voorletters in
     let* bestuurspenningmeester_tussenvoegsel = do_col_optional' col_bestuurspenningmeester_tussenvoegsel in
     let* bestuurspenningmeester_achternaam = do_col_optional' col_bestuurspenningmeester_achternaam in
-    let* bestuurslid3_geslacht = do_col_optional' col_bestuurslid3_geslacht in
-    let* bestuurslid3_voorletters = do_col_optional' col_bestuurslid3_voorletters in
-    let* bestuurslid3_tussenvoegsel = do_col_optional' col_bestuurslid3_tussenvoegsel in
-    let* bestuurslid3_achternaam = do_col_optional' col_bestuurslid3_achternaam in
-    let* bestuurslid4_geslacht = do_col_optional' col_bestuurslid4_geslacht in
-    let* bestuurslid4_voorletters = do_col_optional' col_bestuurslid4_voorletters in
-    let* bestuurslid4_tussenvoegsel = do_col_optional' col_bestuurslid4_tussenvoegsel in
-    let* bestuurslid4_achternaam = do_col_optional' col_bestuurslid4_achternaam in
-    let* bestuurslid5_geslacht = do_col_optional' col_bestuurslid5_geslacht in
-    let* bestuurslid5_voorletters = do_col_optional' col_bestuurslid5_voorletters in
-    let* bestuurslid5_tussenvoegsel = do_col_optional' col_bestuurslid5_tussenvoegsel in
-    let* bestuurslid5_achternaam = do_col_optional' col_bestuurslid5_achternaam in
-    let* bestuurslid6_geslacht = do_col_optional' col_bestuurslid6_geslacht in
-    let* bestuurslid6_voorletters = do_col_optional' col_bestuurslid6_voorletters in
-    let* bestuurslid6_tussenvoegsel = do_col_optional' col_bestuurslid6_tussenvoegsel in
-    let* bestuurslid6_achternaam = do_col_optional' col_bestuurslid6_achternaam in
+    let bestuurspenningmeester = mk_bestuurspenningmeester_option
+      bestuurspenningmeester_geslacht
+      bestuurspenningmeester_voorletters
+      bestuurspenningmeester_tussenvoegsel
+      bestuurspenningmeester_achternaam in
+    let* bestuurslid3_geslacht = do_col_optional' col_bestuurslid_geslacht in
+    let* bestuurslid3_voorletters = do_col_optional' col_bestuurslid_voorletters in
+    let* bestuurslid3_tussenvoegsel = do_col_optional' col_bestuurslid_tussenvoegsel in
+    let* bestuurslid3_achternaam = do_col_optional' col_bestuurslid_achternaam in
+    let bestuurslid3 = mk_bestuurslid_option
+      bestuurslid3_geslacht
+      bestuurslid3_voorletters
+      bestuurslid3_tussenvoegsel
+      bestuurslid3_achternaam in
+    let* bestuurslid4_geslacht = do_col_optional' col_bestuurslid_geslacht in
+    let* bestuurslid4_voorletters = do_col_optional' col_bestuurslid_voorletters in
+    let* bestuurslid4_tussenvoegsel = do_col_optional' col_bestuurslid_tussenvoegsel in
+    let* bestuurslid4_achternaam = do_col_optional' col_bestuurslid_achternaam in
+    let bestuurslid4 = mk_bestuurslid_option
+      bestuurslid4_geslacht
+      bestuurslid4_voorletters
+      bestuurslid4_tussenvoegsel
+      bestuurslid4_achternaam in
+    let* bestuurslid5_geslacht = do_col_optional' col_bestuurslid_geslacht in
+    let* bestuurslid5_voorletters = do_col_optional' col_bestuurslid_voorletters in
+    let* bestuurslid5_tussenvoegsel = do_col_optional' col_bestuurslid_tussenvoegsel in
+    let* bestuurslid5_achternaam = do_col_optional' col_bestuurslid_achternaam in
+    let bestuurslid5 = mk_bestuurslid_option
+      bestuurslid5_geslacht
+      bestuurslid5_voorletters
+      bestuurslid5_tussenvoegsel
+      bestuurslid5_achternaam in
+    let* bestuurslid6_geslacht = do_col_optional' col_bestuurslid_geslacht in
+    let* bestuurslid6_voorletters = do_col_optional' col_bestuurslid_voorletters in
+    let* bestuurslid6_tussenvoegsel = do_col_optional' col_bestuurslid_tussenvoegsel in
+    let* bestuurslid6_achternaam = do_col_optional' col_bestuurslid_achternaam in
+    let bestuurslid6 = mk_bestuurslid_option
+      bestuurslid6_geslacht
+      bestuurslid6_voorletters
+      bestuurslid6_tussenvoegsel
+      bestuurslid6_achternaam in
+    let bestuursleden =
+      [ bestuurslid3; bestuurslid4; bestuurslid5; bestuurslid6; ]
+      |> List.filter (Option.is_some)
+      |> List.map (Option.get) in
     let* doelstelling = do_col' col_doelstelling in
     let* stichter = do_col_optional' col_stichter in
     let* historie = do_col_optional' col_historie in
@@ -110,94 +155,67 @@ let process_row_validate row_num = function
     let* telefoon_fin_aanvragen = do_col_optional' col_telefoon_fin_aanvragen in
     let* trefwoorden = do_col' col_trefwoorden in
     Ok (Fonds {
-      uuid;
-      naam_organisatie;
-      categorie;
-      website;
-      type_organisatie;
-      naam_moeder_organisatie;
-      oprichtings_datum;
-      rechtsvorm;
-      kvk_number;
-      anbi_status;
-      rsin;
-      directeur_algemeen_geslacht;
-      directeur_algemeen_voorletters;
-      directeur_algemeen_tussenvoegsel;
-      directeur_algemeen_achternaam;
-      bestuursvoorzitter_geslacht;
-      bestuursvoorzitter_voorletters;
-      bestuursvoorzitter_tussenvoegsel;
-      bestuursvoorzitter_achternaam;
-      bestuurssecretaris_geslacht;
-      bestuurssecretaris_voorletters;
-      bestuurssecretaris_tussenvoegsel;
-      bestuurssecretaris_achternaam;
-      bestuurspenningmeester_geslacht;
-      bestuurspenningmeester_voorletters;
-      bestuurspenningmeester_tussenvoegsel;
-      bestuurspenningmeester_achternaam;
-      bestuurslid3_geslacht;
-      bestuurslid3_voorletters;
-      bestuurslid3_tussenvoegsel;
-      bestuurslid3_achternaam;
-      bestuurslid4_geslacht;
-      bestuurslid4_voorletters;
-      bestuurslid4_tussenvoegsel;
-      bestuurslid4_achternaam;
-      bestuurslid5_geslacht;
-      bestuurslid5_voorletters;
-      bestuurslid5_tussenvoegsel;
-      bestuurslid5_achternaam;
-      bestuurslid6_geslacht;
-      bestuurslid6_voorletters;
-      bestuurslid6_tussenvoegsel;
-      bestuurslid6_achternaam;
-      doelstelling;
-      historie;
-      stichter;
-      beleidsplan_op_website;
-      doelgroep;
-      doelgroep_overig;
-      activiteiten_beschrijving;
-      interventie_niveau;
-      werk_regio;
-      landen;
-      regio_in_nederland;
-      plaats_in_nederland;
-      besteding_budget;
-      ondersteunde_projecten;
-      fin_fonds;
-      max_ondersteuning;
-      min_ondersteuning;
-      beschrijving_project_aanmerking;
-      doorloop_tijd_act;
-      fonds_type_aanvraag;
-      uitsluiting;
-      op_aanvraag;
-      doorloop_tijd;
-      aanvraag_procedure;
-      url_aanvraag_procedure;
-      eigen_vermogen;
-      inkomsten_eigen_vermogen;
-      herkomst_middelen;
-      boekjaar;
-      url_jaarverslag;
-      contact;
-      cpfinaanvragen_geslacht;
-      cpfinaanvragen_voorletters;
-      cpfinaanvragen_tussenvoegsel;
-      cpfinaanvragen_achternaam;
-      postadres_straat;
-      postadres_huisnummer;
-      postadres_huisnummer_ext;
-      postadres_postcode;
-      postadres_plaats;
-      email;
-      telefoon;
-      telefoon_fin_aanvragen;
-      trefwoorden;
-    })
+        uuid;
+        naam_organisatie;
+        categories;
+        website;
+        type_organisatie;
+        naam_moeder_organisatie;
+        oprichtings_datum;
+        rechtsvorm;
+        kvk_number;
+        anbi_status;
+        rsin;
+        directeur_algemeen;
+        bestuursvoorzitter;
+        bestuurssecretaris;
+        bestuurspenningmeester;
+        bestuursleden;
+        doelstelling;
+        historie;
+        stichter;
+        beleidsplan_op_website;
+        doelgroep;
+        doelgroep_overig;
+        activiteiten_beschrijving;
+        interventie_niveau;
+        werk_regio;
+        landen;
+        regio_in_nederland;
+        plaats_in_nederland;
+        besteding_budget;
+        ondersteunde_projecten;
+        fin_fonds;
+        max_ondersteuning;
+        min_ondersteuning;
+        beschrijving_project_aanmerking;
+        doorloop_tijd_act;
+        fonds_type_aanvraag;
+        uitsluiting;
+        op_aanvraag;
+        doorloop_tijd;
+        aanvraag_procedure;
+        url_aanvraag_procedure;
+        eigen_vermogen;
+        inkomsten_eigen_vermogen;
+        herkomst_middelen;
+        boekjaar;
+        url_jaarverslag;
+        contact;
+        cpfinaanvragen_geslacht;
+        cpfinaanvragen_voorletters;
+        cpfinaanvragen_tussenvoegsel;
+        cpfinaanvragen_achternaam;
+        postadres_straat;
+        postadres_huisnummer;
+        postadres_huisnummer_ext;
+        postadres_postcode;
+        postadres_plaats;
+        email;
+        telefoon;
+        telefoon_fin_aanvragen;
+        trefwoorden;
+      })
 
 let process_row_no_validate row_num = function
   (* --- @todo repeated *)

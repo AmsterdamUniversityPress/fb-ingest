@@ -69,6 +69,32 @@ type directeur_algemeen_achternaam = DirecteurAlgemeenAchternaam of string
 let mk_directeur_algemeen_achternaam x = DirecteurAlgemeenAchternaam x
 let directeur_algemeen_achternaam_to_yojson x = fix_json_variant directeur_algemeen_achternaam_to_yojson x
 
+type directeur_algemeen = DirecteurAlgemeen of {
+    directeur_algemeen_geslacht: directeur_algemeen_geslacht option;
+    directeur_algemeen_voorletters: directeur_algemeen_voorletters option;
+    directeur_algemeen_tussenvoegsel: directeur_algemeen_tussenvoegsel option;
+    directeur_algemeen_achternaam: directeur_algemeen_achternaam option;
+  }
+[@@deriving yojson]
+let mk_directeur_algemeen_option
+    directeur_algemeen_geslacht
+    directeur_algemeen_voorletters
+    directeur_algemeen_tussenvoegsel
+    directeur_algemeen_achternaam =
+  if Option.is_some directeur_algemeen_geslacht
+  || Option.is_some directeur_algemeen_voorletters
+  || Option.is_some directeur_algemeen_tussenvoegsel
+  || Option.is_some directeur_algemeen_achternaam then
+   Some (DirecteurAlgemeen {
+      directeur_algemeen_geslacht;
+      directeur_algemeen_voorletters;
+      directeur_algemeen_tussenvoegsel;
+      directeur_algemeen_achternaam;
+    })
+  else None
+
+let directeur_algemeen_to_yojson x = fix_json_variant directeur_algemeen_to_yojson x
+
 type bestuursvoorzitter_geslacht = BestuursvoorzitterGeslacht of string
 [@@deriving yojson]
 let mk_bestuursvoorzitter_geslacht x = BestuursvoorzitterGeslacht x
@@ -88,6 +114,32 @@ type bestuursvoorzitter_achternaam = BestuursvoorzitterAchternaam of string
 [@@deriving yojson]
 let mk_bestuursvoorzitter_achternaam x = BestuursvoorzitterAchternaam x
 let bestuursvoorzitter_achternaam_to_yojson x = fix_json_variant bestuursvoorzitter_achternaam_to_yojson x
+
+type bestuursvoorzitter = Bestuursvoorzitter of {
+    bestuursvoorzitter_geslacht: bestuursvoorzitter_geslacht option;
+    bestuursvoorzitter_voorletters: bestuursvoorzitter_voorletters option;
+    bestuursvoorzitter_tussenvoegsel: bestuursvoorzitter_tussenvoegsel option;
+    bestuursvoorzitter_achternaam: bestuursvoorzitter_achternaam option;
+  }
+[@@deriving yojson]
+let bestuursvoorzitter_to_yojson x = fix_json_variant bestuursvoorzitter_to_yojson x
+
+let mk_bestuursvoorzitter_option
+    bestuursvoorzitter_geslacht
+    bestuursvoorzitter_voorletters
+    bestuursvoorzitter_tussenvoegsel
+    bestuursvoorzitter_achternaam =
+  if Option.is_some bestuursvoorzitter_geslacht
+  || Option.is_some bestuursvoorzitter_voorletters
+  || Option.is_some bestuursvoorzitter_tussenvoegsel
+  || Option.is_some bestuursvoorzitter_achternaam then
+    Some (Bestuursvoorzitter {
+        bestuursvoorzitter_geslacht;
+        bestuursvoorzitter_voorletters;
+        bestuursvoorzitter_tussenvoegsel;
+        bestuursvoorzitter_achternaam;
+      })
+  else None
 
 type bestuurssecretaris_geslacht = BestuurssecretarisGeslacht of string
 [@@deriving yojson]
@@ -109,6 +161,32 @@ type bestuurssecretaris_achternaam = BestuurssecretarisAchternaam of string
 let mk_bestuurssecretaris_achternaam x = BestuurssecretarisAchternaam x
 let bestuurssecretaris_achternaam_to_yojson x = fix_json_variant bestuurssecretaris_achternaam_to_yojson x
 
+type bestuurssecretaris = Bestuurssecretaris of {
+    bestuurssecretaris_geslacht: bestuurssecretaris_geslacht option;
+    bestuurssecretaris_voorletters: bestuurssecretaris_voorletters option;
+    bestuurssecretaris_tussenvoegsel: bestuurssecretaris_tussenvoegsel option;
+    bestuurssecretaris_achternaam: bestuurssecretaris_achternaam option;
+  }
+[@@deriving yojson]
+let bestuursecretaris_to_yojson bestuurssecretaris_to_yojson x = fix_json_variant bestuurssecretaris_to_yojson x
+
+let mk_bestuurssecretaris_option
+    bestuurssecretaris_geslacht
+    bestuurssecretaris_voorletters
+    bestuurssecretaris_tussenvoegsel
+    bestuurssecretaris_achternaam =
+  if Option.is_some bestuurssecretaris_geslacht
+  || Option.is_some bestuurssecretaris_voorletters
+  || Option.is_some bestuurssecretaris_tussenvoegsel
+  || Option.is_some bestuurssecretaris_achternaam then
+    Some (Bestuurssecretaris {
+        bestuurssecretaris_geslacht;
+        bestuurssecretaris_voorletters;
+        bestuurssecretaris_tussenvoegsel;
+        bestuurssecretaris_achternaam;
+      })
+  else None
+
 type bestuurspenningmeester_geslacht = BestuurspenningmeesterGeslacht of string
 [@@deriving yojson]
 let mk_bestuurspenningmeester_geslacht x = BestuurspenningmeesterGeslacht x
@@ -128,6 +206,77 @@ type bestuurspenningmeester_achternaam = BestuurspenningmeesterAchternaam of str
 [@@deriving yojson]
 let mk_bestuurspenningmeester_achternaam x = BestuurspenningmeesterAchternaam x
 let bestuurspenningmeester_achternaam_to_yojson x = fix_json_variant bestuurspenningmeester_achternaam_to_yojson x
+
+type bestuurspenningmeester = Bestuurspenningmeester of {
+    bestuurspenningmeester_geslacht: bestuurspenningmeester_geslacht option;
+    bestuurspenningmeester_voorletters: bestuurspenningmeester_voorletters option;
+    bestuurspenningmeester_tussenvoegsel: bestuurspenningmeester_tussenvoegsel option;
+    bestuurspenningmeester_achternaam: bestuurspenningmeester_achternaam option;
+  }
+[@@deriving yojson]
+let bestuurpenningmeester_to_yojson bestuurspenningmeester_to_yojson x = fix_json_variant bestuurspenningmeester_to_yojson x
+
+let mk_bestuurspenningmeester_option
+    bestuurspenningmeester_geslacht
+    bestuurspenningmeester_voorletters
+    bestuurspenningmeester_tussenvoegsel
+    bestuurspenningmeester_achternaam =
+  if Option.is_some bestuurspenningmeester_geslacht
+  || Option.is_some bestuurspenningmeester_voorletters
+  || Option.is_some bestuurspenningmeester_tussenvoegsel
+  || Option.is_some bestuurspenningmeester_achternaam then
+    Some (Bestuurspenningmeester {
+        bestuurspenningmeester_geslacht;
+        bestuurspenningmeester_voorletters;
+        bestuurspenningmeester_tussenvoegsel;
+        bestuurspenningmeester_achternaam;
+      })
+  else None
+
+type bestuurslid_geslacht = BestuurslidGeslacht of string
+[@@deriving yojson]
+let mk_bestuurslid_geslacht x = BestuurslidGeslacht x
+let bestuurslid_geslacht_to_yojson x = fix_json_variant bestuurslid_geslacht_to_yojson x
+
+type bestuurslid_voorletters = BestuurslidVoorletters of string
+[@@deriving yojson]
+let mk_bestuurslid_voorletters x = BestuurslidVoorletters x
+let bestuurslid_voorletters_to_yojson x = fix_json_variant bestuurslid_voorletters_to_yojson x
+
+type bestuurslid_tussenvoegsel = BestuurslidTussenvoegsel of string
+[@@deriving yojson]
+let mk_bestuurslid_tussenvoegsel x = BestuurslidTussenvoegsel x
+let bestuurslid_tussenvoegsel_to_yojson x = fix_json_variant bestuurslid_tussenvoegsel_to_yojson x
+
+type bestuurslid_achternaam = BestuurslidAchternaam of string
+[@@deriving yojson]
+let mk_bestuurslid_achternaam x = BestuurslidAchternaam x
+let bestuurslid_achternaam_to_yojson x = fix_json_variant bestuurslid_achternaam_to_yojson x
+
+type bestuurslid = Bestuurslid of {
+    bestuurslid_geslacht: bestuurslid_geslacht option;
+    bestuurslid_voorletters: bestuurslid_voorletters option;
+    bestuurslid_tussenvoegsel: bestuurslid_tussenvoegsel option;
+    bestuurslid_achternaam: bestuurslid_achternaam option;
+  }
+[@@deriving yojson]
+let bestuurlid_to_yojson bestuurslid_to_yojson x = fix_json_variant bestuurslid_to_yojson x
+let mk_bestuurslid_option
+    bestuurslid_geslacht
+    bestuurslid_voorletters
+    bestuurslid_tussenvoegsel
+    bestuurslid_achternaam =
+  if Option.is_some bestuurslid_geslacht
+  || Option.is_some bestuurslid_voorletters
+  || Option.is_some bestuurslid_tussenvoegsel
+  || Option.is_some bestuurslid_achternaam then
+    Some (Bestuurslid {
+        bestuurslid_geslacht;
+        bestuurslid_voorletters ;
+        bestuurslid_tussenvoegsel;
+        bestuurslid_achternaam;
+      })
+  else None
 
 type bestuurslid3_geslacht = Bestuurslid3Geslacht of string
 [@@deriving yojson]
@@ -426,10 +575,10 @@ type telefoon_fin_aanvragen = TelefoonFinAanvragen of string
 let mk_telefoon_fin_aanvragen x = TelefoonFinAanvragen x
 let telefoon_fin_aanvragen_to_yojson x = fix_json_variant telefoon_fin_aanvragen_to_yojson x
 
-type trefwoorden = Trefwoorden of string
+type trefwoord= Trefwoord of string
 [@@deriving yojson]
-let mk_trefwoorden x = Trefwoorden x
-let trefwoorden_to_yojson x = fix_json_variant trefwoorden_to_yojson x
+let mk_trefwoord x = Trefwoord x
+let trefwoord_to_yojson x = fix_json_variant trefwoord_to_yojson x
 
 let mk_naam_moeder_organisatie x = NaamMoederOrganisatie x
 let naam_moeder_organisatie_to_yojson x = fix_json_variant naam_moeder_organisatie_to_yojson x
@@ -450,47 +599,27 @@ let type_organisatie_to_yojson x = fix_json_variant type_organisatie_to_yojson x
 type fonds = Fonds of {
   uuid: string;
   naam_organisatie: naam_organisatie;
-  categorie: categorie option;
+  (* --- @todo maak verplicht? *)
+  categories: categorie list option;
   website: website option;
   type_organisatie: type_organisatie option;
   naam_moeder_organisatie: naam_moeder_organisatie option;
   oprichtings_datum: oprichtings_datum option;
   rechtsvorm: rechtsvorm;
   kvk_number: kvk_number option;
+  (* // --- @todo maak verplicht *)
+  (* // --- @todo remove Ja & Cultuur *)
   anbi_status: anbi_status option;
   rsin: rsin option;
-  directeur_algemeen_geslacht: directeur_algemeen_geslacht option;
-  directeur_algemeen_voorletters: directeur_algemeen_voorletters option;
-  directeur_algemeen_tussenvoegsel: directeur_algemeen_tussenvoegsel option;
-  directeur_algemeen_achternaam: directeur_algemeen_achternaam option;
-  bestuursvoorzitter_geslacht: bestuursvoorzitter_geslacht option;
-  bestuursvoorzitter_voorletters: bestuursvoorzitter_voorletters option;
-  bestuursvoorzitter_tussenvoegsel: bestuursvoorzitter_tussenvoegsel option;
-  bestuursvoorzitter_achternaam: bestuursvoorzitter_achternaam option;
-  bestuurssecretaris_geslacht: bestuurssecretaris_geslacht option;
-  bestuurssecretaris_voorletters: bestuurssecretaris_voorletters option;
-  bestuurssecretaris_tussenvoegsel: bestuurssecretaris_tussenvoegsel option;
-  bestuurssecretaris_achternaam: bestuurssecretaris_achternaam option;
-  bestuurspenningmeester_geslacht: bestuurspenningmeester_geslacht option;
-  bestuurspenningmeester_voorletters: bestuurspenningmeester_voorletters option;
-  bestuurspenningmeester_tussenvoegsel: bestuurspenningmeester_tussenvoegsel option;
-  bestuurspenningmeester_achternaam: bestuurspenningmeester_achternaam option;
-  bestuurslid3_geslacht: bestuurslid3_geslacht option;
-  bestuurslid3_voorletters: bestuurslid3_voorletters option;
-  bestuurslid3_tussenvoegsel: bestuurslid3_tussenvoegsel option;
-  bestuurslid3_achternaam: bestuurslid3_achternaam option;
-  bestuurslid4_geslacht: bestuurslid4_geslacht option;
-  bestuurslid4_voorletters: bestuurslid4_voorletters option;
-  bestuurslid4_tussenvoegsel: bestuurslid4_tussenvoegsel option;
-  bestuurslid4_achternaam: bestuurslid4_achternaam option;
-  bestuurslid5_geslacht: bestuurslid5_geslacht option;
-  bestuurslid5_voorletters: bestuurslid5_voorletters option;
-  bestuurslid5_tussenvoegsel: bestuurslid5_tussenvoegsel option;
-  bestuurslid5_achternaam: bestuurslid5_achternaam option;
-  bestuurslid6_geslacht: bestuurslid6_geslacht option;
-  bestuurslid6_voorletters: bestuurslid6_voorletters option;
-  bestuurslid6_tussenvoegsel: bestuurslid6_tussenvoegsel option;
-  bestuurslid6_achternaam: bestuurslid6_achternaam option;
+  (* // --- @todo alle namen samenvoegen, e.g. maak directeur_algemeen_naam_en_aanhef, aanhef optioneel, "Mw. C. van der Veld" *)
+
+  directeur_algemeen: directeur_algemeen option;
+  (* // --- @todo bestuursleden_hoofd *)
+  bestuursvoorzitter: bestuursvoorzitter option;
+  bestuurssecretaris: bestuurssecretaris option;
+  bestuurspenningmeester: bestuurspenningmeester option;
+  (* // --- @todo bestuursleden_overig *)
+  bestuursleden: bestuurslid list;
   doelstelling: doelstelling;
   stichter: stichter option;
   historie: historie option;
@@ -534,7 +663,9 @@ type fonds = Fonds of {
   email: email option;
   telefoon: telefoon option;
   telefoon_fin_aanvragen: telefoon_fin_aanvragen option;
-  trefwoorden: trefwoorden;
+  (* --- @todo trefwoord ipv trefwoorden *)
+  (* --- @todo moet trefwoord list *)
+  trefwoorden: trefwoord list;
 }
 [@@deriving yojson]
 
@@ -550,6 +681,7 @@ module Column = struct
     | `Bool of bool -> 'a
     | `Int of int -> 'a
     | `Text of string -> 'a
+    (* | `Text of string list -> 'a *)
     (* | `Text' of string array -> 'a *)
     | `Url of url -> 'a
   ]
@@ -597,10 +729,10 @@ let col_naam_organisatie = Column.Column {
   validate_pattern = validate_text;
   mk = `Text mk_naam_organisatie;
 }
-let col_categorie = Column.Column {
-  name = "categorie";
+let col_categories = Column.Column {
+  name = "categories";
   validate_pattern = validate_text;
-  mk = `Text mk_categorie;
+  mk = `Text (List.map (mk_categorie % String.trim) % String.split_on_char ('|'))
 }
 let col_website = Column.Column {
   name = "website";
@@ -721,6 +853,26 @@ let col_bestuurspenningmeester_achternaam = Column.Column {
   name = "bestuurspenningmeester_achternaam";
   validate_pattern = validate_text;
   mk = `Text mk_bestuurspenningmeester_achternaam;
+}
+let col_bestuurslid_geslacht = Column.Column {
+  name = "bestuurslid_geslacht";
+  validate_pattern = validate_text;
+  mk = `Text mk_bestuurslid_geslacht;
+}
+let col_bestuurslid_voorletters = Column.Column {
+  name = "bestuurslid_voorletters";
+  validate_pattern = validate_text;
+  mk = `Text mk_bestuurslid_voorletters;
+}
+let col_bestuurslid_tussenvoegsel = Column.Column {
+  name = "bestuurslid_tussenvoegsel";
+  validate_pattern = validate_text;
+  mk = `Text mk_bestuurslid_tussenvoegsel;
+}
+let col_bestuurslid_achternaam = Column.Column {
+  name = "bestuurslid_achternaam";
+  validate_pattern = validate_text;
+  mk = `Text mk_bestuurslid_achternaam;
 }
 let col_bestuurslid3_geslacht = Column.Column {
   name = "bestuurslid3_geslacht";
@@ -1020,5 +1172,5 @@ let col_telefoon_fin_aanvragen = Column.Column {
 let col_trefwoorden = Column.Column {
   name = "trefwoorden";
   validate_pattern = validate_text;
-  mk = `Text mk_trefwoorden;
+  mk = `Text (List.map (mk_trefwoord % String.trim) % String.split_on_char (','))
 }
