@@ -145,11 +145,22 @@ let process_row_validate row_num = function
     let* cpfinaanvragen_voorletters = do_col_optional' col_cpfinaanvragen_voorletters in
     let* cpfinaanvragen_tussenvoegsel = do_col_optional' col_cpfinaanvragen_tussenvoegsel in
     let* cpfinaanvragen_achternaam = do_col_optional' col_cpfinaanvragen_achternaam in
+    let cpfinaanvragen = mk_cpfinaanvragen_option
+      cpfinaanvragen_geslacht
+      cpfinaanvragen_voorletters
+      cpfinaanvragen_tussenvoegsel
+      cpfinaanvragen_achternaam in
     let* postadres_straat = do_col_optional' col_postadres_straat in
     let* postadres_huisnummer = do_col_optional' col_postadres_huisnummer in
     let* postadres_huisnummer_ext = do_col_optional' col_postadres_huisnummer_ext in
     let* postadres_postcode = do_col_optional' col_postadres_postcode in
     let* postadres_plaats = do_col_optional' col_postadres_plaats in
+    let postadres = mk_postadres_option
+      postadres_straat
+      postadres_huisnummer
+      postadres_huisnummer_ext
+      postadres_postcode
+      postadres_plaats in
     let* email = do_col_optional' col_email in
     let* telefoon = do_col_optional' col_telefoon in
     let* telefoon_fin_aanvragen = do_col_optional' col_telefoon_fin_aanvragen in
@@ -202,15 +213,8 @@ let process_row_validate row_num = function
         boekjaar;
         url_jaarverslag;
         contact;
-        cpfinaanvragen_geslacht;
-        cpfinaanvragen_voorletters;
-        cpfinaanvragen_tussenvoegsel;
-        cpfinaanvragen_achternaam;
-        postadres_straat;
-        postadres_huisnummer;
-        postadres_huisnummer_ext;
-        postadres_postcode;
-        postadres_plaats;
+        cpfinaanvragen;
+        postadres;
         email;
         telefoon;
         telefoon_fin_aanvragen;

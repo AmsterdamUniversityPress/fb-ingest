@@ -92,7 +92,6 @@ let mk_directeur_algemeen_option
       directeur_algemeen_achternaam;
     })
   else None
-
 let directeur_algemeen_to_yojson x = fix_json_variant directeur_algemeen_to_yojson x
 
 type bestuursvoorzitter_geslacht = BestuursvoorzitterGeslacht of string
@@ -123,7 +122,6 @@ type bestuursvoorzitter = Bestuursvoorzitter of {
   }
 [@@deriving yojson]
 let bestuursvoorzitter_to_yojson x = fix_json_variant bestuursvoorzitter_to_yojson x
-
 let mk_bestuursvoorzitter_option
     bestuursvoorzitter_geslacht
     bestuursvoorzitter_voorletters
@@ -169,7 +167,6 @@ type bestuurssecretaris = Bestuurssecretaris of {
   }
 [@@deriving yojson]
 let bestuursecretaris_to_yojson bestuurssecretaris_to_yojson x = fix_json_variant bestuurssecretaris_to_yojson x
-
 let mk_bestuurssecretaris_option
     bestuurssecretaris_geslacht
     bestuurssecretaris_voorletters
@@ -215,7 +212,6 @@ type bestuurspenningmeester = Bestuurspenningmeester of {
   }
 [@@deriving yojson]
 let bestuurpenningmeester_to_yojson bestuurspenningmeester_to_yojson x = fix_json_variant bestuurspenningmeester_to_yojson x
-
 let mk_bestuurspenningmeester_option
     bestuurspenningmeester_geslacht
     bestuurspenningmeester_voorletters
@@ -535,6 +531,31 @@ type cpfinaanvragen_achternaam = CpfinaanvragenAchternaam of string
 let mk_cpfinaanvragen_achternaam x = CpfinaanvragenAchternaam x
 let cpfinaanvragen_achternaam_to_yojson x = fix_json_variant cpfinaanvragen_achternaam_to_yojson x
 
+type cpfinaanvragen = Cpfinaanvragen of {
+    cpfinaanvragen_geslacht: cpfinaanvragen_geslacht option;
+    cpfinaanvragen_voorletters: cpfinaanvragen_voorletters option;
+    cpfinaanvragen_tussenvoegsel: cpfinaanvragen_tussenvoegsel option;
+    cpfinaanvragen_achternaam: cpfinaanvragen_achternaam option;
+  }
+[@@deriving yojson]
+let cpfinaanvragen_to_yojson x = fix_json_variant cpfinaanvragen_to_yojson x
+let mk_cpfinaanvragen_option
+    cpfinaanvragen_geslacht
+    cpfinaanvragen_voorletters
+    cpfinaanvragen_tussenvoegsel
+    cpfinaanvragen_achternaam =
+  if Option.is_some cpfinaanvragen_geslacht
+  || Option.is_some cpfinaanvragen_voorletters
+  || Option.is_some cpfinaanvragen_tussenvoegsel
+  || Option.is_some cpfinaanvragen_achternaam then
+    Some (Cpfinaanvragen {
+        cpfinaanvragen_geslacht;
+        cpfinaanvragen_voorletters;
+        cpfinaanvragen_tussenvoegsel;
+        cpfinaanvragen_achternaam;
+      })
+  else None
+
 type postadres_straat = PostadresStraat of string
 [@@deriving yojson]
 let mk_postadres_straat x = PostadresStraat x
@@ -559,6 +580,35 @@ type postadres_plaats = PostadresPlaats of string
 [@@deriving yojson]
 let mk_postadres_plaats x = PostadresPlaats x
 let postadres_plaats_to_yojson x = fix_json_variant postadres_plaats_to_yojson x
+
+type postadres = Postadres of {
+    postadres_straat: postadres_straat option;
+    postadres_huisnummer: postadres_huisnummer option;
+    postadres_huisnummer_ext: postadres_huisnummer_ext option;
+    postadres_postcode: postadres_postcode option;
+    postadres_plaats: postadres_plaats option
+  }
+[@@deriving yojson]
+let postadres_to_yojson x = fix_json_variant postadres_to_yojson x
+let mk_postadres_option
+    postadres_straat
+    postadres_huisnummer
+    postadres_huisnummer_ext
+    postadres_postcode
+    postadres_plaats =
+  if Option.is_some postadres_straat
+  || Option.is_some postadres_huisnummer
+  || Option.is_some postadres_huisnummer_ext
+  || Option.is_some postadres_postcode
+  || Option.is_some postadres_plaats then
+    Some (Postadres {
+        postadres_straat;
+        postadres_huisnummer;
+        postadres_huisnummer_ext;
+        postadres_postcode;
+        postadres_plaats;
+      })
+  else None
 
 type email = Email of string
 [@@deriving yojson]
@@ -651,20 +701,11 @@ type fonds = Fonds of {
   boekjaar: boekjaar option;
   url_jaarverslag: url_jaarverslag option;
   contact: contact option;
-  cpfinaanvragen_geslacht: cpfinaanvragen_geslacht option;
-  cpfinaanvragen_voorletters: cpfinaanvragen_voorletters option;
-  cpfinaanvragen_tussenvoegsel: cpfinaanvragen_tussenvoegsel option;
-  cpfinaanvragen_achternaam: cpfinaanvragen_achternaam option;
-  postadres_straat: postadres_straat option;
-  postadres_huisnummer: postadres_huisnummer option;
-  postadres_huisnummer_ext: postadres_huisnummer_ext option;
-  postadres_postcode: postadres_postcode option;
-  postadres_plaats: postadres_plaats option;
+  cpfinaanvragen: cpfinaanvragen option;
+  postadres: postadres option;
   email: email option;
   telefoon: telefoon option;
   telefoon_fin_aanvragen: telefoon_fin_aanvragen option;
-  (* --- @todo trefwoord ipv trefwoorden *)
-  (* --- @todo moet trefwoord list *)
   trefwoorden: trefwoord list;
 }
 [@@deriving yojson]
