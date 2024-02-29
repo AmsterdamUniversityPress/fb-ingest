@@ -108,8 +108,7 @@ let process_row_validate row_num = function
       bestuurslid6_achternaam in
     let bestuursleden =
       [ bestuurslid3; bestuurslid4; bestuurslid5; bestuurslid6; ]
-      |> List.filter (Option.is_some)
-      |> List.map (Option.get) in
+      |> List.filter_map id in
     let* doelstelling = do_col' col_doelstelling in
     let* stichter = do_col_optional' col_stichter in
     let* historie = do_col_optional' col_historie in

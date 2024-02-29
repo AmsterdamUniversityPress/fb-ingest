@@ -49,310 +49,38 @@ type rsin = Rsin of int
 let mk_rsin x = Rsin x
 let rsin_to_yojson x = fix_json_variant rsin_to_yojson x
 
-type directeur_algemeen_geslacht = DirecteurAlgemeenGeslacht of string
+type directeur_algemeen = DirecteurAlgemeen of string
 [@@deriving yojson]
-let mk_directeur_algemeen_geslacht x = DirecteurAlgemeenGeslacht x
-let directeur_algemeen_geslacht_to_yojson x = fix_json_variant directeur_algemeen_geslacht_to_yojson x
 
-type directeur_algemeen_voorletters = DirecteurAlgemeenVoorletters of string
-[@@deriving yojson]
-let mk_directeur_algemeen_voorletters x = DirecteurAlgemeenVoorletters x
-let directeur_algemeen_voorletters_to_yojson x = fix_json_variant directeur_algemeen_voorletters_to_yojson x
+let mk_person_option kind mk geslacht voorletters tussenvoegsel achternaam =
+  let args = [geslacht; voorletters; tussenvoegsel; achternaam] in
+  if Util.Option.all_none args then None else
+  if Option.is_none achternaam then
+    let () = Fmt.epr "Warning: achternaam is empty for %s, skipping@." kind in
+    None else
+  Some (mk (Util.Option.join_some " " args))
 
-type directeur_algemeen_tussenvoegsel = DirecteurAlgemeenTussenvoegsel of string
-[@@deriving yojson]
-let mk_directeur_algemeen_tussenvoegsel x = DirecteurAlgemeenTussenvoegsel x
-let directeur_algemeen_tussenvoegsel_to_yojson x = fix_json_variant directeur_algemeen_tussenvoegsel_to_yojson x
+let mk_directeur_algemeen_option = mk_person_option "directeur_algemeen" (fun x -> DirecteurAlgemeen x)
 
-type directeur_algemeen_achternaam = DirecteurAlgemeenAchternaam of string
+type bestuursvoorzitter = Bestuursvoorzitter of string
 [@@deriving yojson]
-let mk_directeur_algemeen_achternaam x = DirecteurAlgemeenAchternaam x
-let directeur_algemeen_achternaam_to_yojson x = fix_json_variant directeur_algemeen_achternaam_to_yojson x
-
-type directeur_algemeen = DirecteurAlgemeen of {
-    directeur_algemeen_geslacht: directeur_algemeen_geslacht option;
-    directeur_algemeen_voorletters: directeur_algemeen_voorletters option;
-    directeur_algemeen_tussenvoegsel: directeur_algemeen_tussenvoegsel option;
-    directeur_algemeen_achternaam: directeur_algemeen_achternaam option;
-  }
-[@@deriving yojson]
-let mk_directeur_algemeen_option
-    directeur_algemeen_geslacht
-    directeur_algemeen_voorletters
-    directeur_algemeen_tussenvoegsel
-    directeur_algemeen_achternaam =
-  if Option.is_some directeur_algemeen_geslacht
-  || Option.is_some directeur_algemeen_voorletters
-  || Option.is_some directeur_algemeen_tussenvoegsel
-  || Option.is_some directeur_algemeen_achternaam then
-   Some (DirecteurAlgemeen {
-      directeur_algemeen_geslacht;
-      directeur_algemeen_voorletters;
-      directeur_algemeen_tussenvoegsel;
-      directeur_algemeen_achternaam;
-    })
-  else None
-let directeur_algemeen_to_yojson x = fix_json_variant directeur_algemeen_to_yojson x
-
-type bestuursvoorzitter_geslacht = BestuursvoorzitterGeslacht of string
-[@@deriving yojson]
-let mk_bestuursvoorzitter_geslacht x = BestuursvoorzitterGeslacht x
-let bestuursvoorzitter_geslacht_to_yojson x = fix_json_variant bestuursvoorzitter_geslacht_to_yojson x
-
-type bestuursvoorzitter_voorletters = BestuursvoorzitterVoorletters of string
-[@@deriving yojson]
-let mk_bestuursvoorzitter_voorletters x = BestuursvoorzitterVoorletters x
-let bestuursvoorzitter_voorletters_to_yojson x = fix_json_variant bestuursvoorzitter_voorletters_to_yojson x
-
-type bestuursvoorzitter_tussenvoegsel = BestuursvoorzitterTussenvoegsel of string
-[@@deriving yojson]
-let mk_bestuursvoorzitter_tussenvoegsel x = BestuursvoorzitterTussenvoegsel x
-let bestuursvoorzitter_tussenvoegsel_to_yojson x = fix_json_variant bestuursvoorzitter_tussenvoegsel_to_yojson x
-
-type bestuursvoorzitter_achternaam = BestuursvoorzitterAchternaam of string
-[@@deriving yojson]
-let mk_bestuursvoorzitter_achternaam x = BestuursvoorzitterAchternaam x
-let bestuursvoorzitter_achternaam_to_yojson x = fix_json_variant bestuursvoorzitter_achternaam_to_yojson x
-
-type bestuursvoorzitter = Bestuursvoorzitter of {
-    bestuursvoorzitter_geslacht: bestuursvoorzitter_geslacht option;
-    bestuursvoorzitter_voorletters: bestuursvoorzitter_voorletters option;
-    bestuursvoorzitter_tussenvoegsel: bestuursvoorzitter_tussenvoegsel option;
-    bestuursvoorzitter_achternaam: bestuursvoorzitter_achternaam option;
-  }
-[@@deriving yojson]
+let mk_bestuursvoorzitter_option = mk_person_option "bestuursvoorzitter" (fun x -> Bestuursvoorzitter x)
 let bestuursvoorzitter_to_yojson x = fix_json_variant bestuursvoorzitter_to_yojson x
-let mk_bestuursvoorzitter_option
-    bestuursvoorzitter_geslacht
-    bestuursvoorzitter_voorletters
-    bestuursvoorzitter_tussenvoegsel
-    bestuursvoorzitter_achternaam =
-  if Option.is_some bestuursvoorzitter_geslacht
-  || Option.is_some bestuursvoorzitter_voorletters
-  || Option.is_some bestuursvoorzitter_tussenvoegsel
-  || Option.is_some bestuursvoorzitter_achternaam then
-    Some (Bestuursvoorzitter {
-        bestuursvoorzitter_geslacht;
-        bestuursvoorzitter_voorletters;
-        bestuursvoorzitter_tussenvoegsel;
-        bestuursvoorzitter_achternaam;
-      })
-  else None
 
-type bestuurssecretaris_geslacht = BestuurssecretarisGeslacht of string
+type bestuurssecretaris = Bestuurssecretaris of string
 [@@deriving yojson]
-let mk_bestuurssecretaris_geslacht x = BestuurssecretarisGeslacht x
-let bestuurssecretaris_geslacht_to_yojson x = fix_json_variant bestuurssecretaris_geslacht_to_yojson x
+let mk_bestuurssecretaris_option = mk_person_option "bestuurssecretaris" (fun x -> Bestuurssecretaris x)
+let bestuurssecretaris_to_yojson x = fix_json_variant bestuurssecretaris_to_yojson x
 
-type bestuurssecretaris_voorletters = BestuurssecretarisVoorletters of string
+type bestuurspenningmeester = Bestuurspenningmeester of string
 [@@deriving yojson]
-let mk_bestuurssecretaris_voorletters x = BestuurssecretarisVoorletters x
-let bestuurssecretaris_voorletters_to_yojson x = fix_json_variant bestuurssecretaris_voorletters_to_yojson x
+let mk_bestuurspenningmeester_option = mk_person_option "bestuurspenningmeester" (fun x -> Bestuurspenningmeester x)
+let bestuurspenningmeester_to_yojson x = fix_json_variant bestuurspenningmeester_to_yojson x
 
-type bestuurssecretaris_tussenvoegsel = BestuurssecretarisTussenvoegsel of string
+type bestuurslid = Bestuurslid of string
 [@@deriving yojson]
-let mk_bestuurssecretaris_tussenvoegsel x = BestuurssecretarisTussenvoegsel x
-let bestuurssecretaris_tussenvoegsel_to_yojson x = fix_json_variant bestuurssecretaris_tussenvoegsel_to_yojson x
-
-type bestuurssecretaris_achternaam = BestuurssecretarisAchternaam of string
-[@@deriving yojson]
-let mk_bestuurssecretaris_achternaam x = BestuurssecretarisAchternaam x
-let bestuurssecretaris_achternaam_to_yojson x = fix_json_variant bestuurssecretaris_achternaam_to_yojson x
-
-type bestuurssecretaris = Bestuurssecretaris of {
-    bestuurssecretaris_geslacht: bestuurssecretaris_geslacht option;
-    bestuurssecretaris_voorletters: bestuurssecretaris_voorletters option;
-    bestuurssecretaris_tussenvoegsel: bestuurssecretaris_tussenvoegsel option;
-    bestuurssecretaris_achternaam: bestuurssecretaris_achternaam option;
-  }
-[@@deriving yojson]
-let bestuursecretaris_to_yojson bestuurssecretaris_to_yojson x = fix_json_variant bestuurssecretaris_to_yojson x
-let mk_bestuurssecretaris_option
-    bestuurssecretaris_geslacht
-    bestuurssecretaris_voorletters
-    bestuurssecretaris_tussenvoegsel
-    bestuurssecretaris_achternaam =
-  if Option.is_some bestuurssecretaris_geslacht
-  || Option.is_some bestuurssecretaris_voorletters
-  || Option.is_some bestuurssecretaris_tussenvoegsel
-  || Option.is_some bestuurssecretaris_achternaam then
-    Some (Bestuurssecretaris {
-        bestuurssecretaris_geslacht;
-        bestuurssecretaris_voorletters;
-        bestuurssecretaris_tussenvoegsel;
-        bestuurssecretaris_achternaam;
-      })
-  else None
-
-type bestuurspenningmeester_geslacht = BestuurspenningmeesterGeslacht of string
-[@@deriving yojson]
-let mk_bestuurspenningmeester_geslacht x = BestuurspenningmeesterGeslacht x
-let bestuurspenningmeester_geslacht_to_yojson x = fix_json_variant bestuurspenningmeester_geslacht_to_yojson x
-
-type bestuurspenningmeester_voorletters = BestuurspenningmeesterVoorletters of string
-[@@deriving yojson]
-let mk_bestuurspenningmeester_voorletters x = BestuurspenningmeesterVoorletters x
-let bestuurspenningmeester_voorletters_to_yojson x = fix_json_variant bestuurspenningmeester_voorletters_to_yojson x
-
-type bestuurspenningmeester_tussenvoegsel = BestuurspenningmeesterTussenvoegsel of string
-[@@deriving yojson]
-let mk_bestuurspenningmeester_tussenvoegsel x = BestuurspenningmeesterTussenvoegsel x
-let bestuurspenningmeester_tussenvoegsel_to_yojson x = fix_json_variant bestuurspenningmeester_tussenvoegsel_to_yojson x
-
-type bestuurspenningmeester_achternaam = BestuurspenningmeesterAchternaam of string
-[@@deriving yojson]
-let mk_bestuurspenningmeester_achternaam x = BestuurspenningmeesterAchternaam x
-let bestuurspenningmeester_achternaam_to_yojson x = fix_json_variant bestuurspenningmeester_achternaam_to_yojson x
-
-type bestuurspenningmeester = Bestuurspenningmeester of {
-    bestuurspenningmeester_geslacht: bestuurspenningmeester_geslacht option;
-    bestuurspenningmeester_voorletters: bestuurspenningmeester_voorletters option;
-    bestuurspenningmeester_tussenvoegsel: bestuurspenningmeester_tussenvoegsel option;
-    bestuurspenningmeester_achternaam: bestuurspenningmeester_achternaam option;
-  }
-[@@deriving yojson]
-let bestuurpenningmeester_to_yojson bestuurspenningmeester_to_yojson x = fix_json_variant bestuurspenningmeester_to_yojson x
-let mk_bestuurspenningmeester_option
-    bestuurspenningmeester_geslacht
-    bestuurspenningmeester_voorletters
-    bestuurspenningmeester_tussenvoegsel
-    bestuurspenningmeester_achternaam =
-  if Option.is_some bestuurspenningmeester_geslacht
-  || Option.is_some bestuurspenningmeester_voorletters
-  || Option.is_some bestuurspenningmeester_tussenvoegsel
-  || Option.is_some bestuurspenningmeester_achternaam then
-    Some (Bestuurspenningmeester {
-        bestuurspenningmeester_geslacht;
-        bestuurspenningmeester_voorletters;
-        bestuurspenningmeester_tussenvoegsel;
-        bestuurspenningmeester_achternaam;
-      })
-  else None
-
-type bestuurslid_geslacht = BestuurslidGeslacht of string
-[@@deriving yojson]
-let mk_bestuurslid_geslacht x = BestuurslidGeslacht x
-let bestuurslid_geslacht_to_yojson x = fix_json_variant bestuurslid_geslacht_to_yojson x
-
-type bestuurslid_voorletters = BestuurslidVoorletters of string
-[@@deriving yojson]
-let mk_bestuurslid_voorletters x = BestuurslidVoorletters x
-let bestuurslid_voorletters_to_yojson x = fix_json_variant bestuurslid_voorletters_to_yojson x
-
-type bestuurslid_tussenvoegsel = BestuurslidTussenvoegsel of string
-[@@deriving yojson]
-let mk_bestuurslid_tussenvoegsel x = BestuurslidTussenvoegsel x
-let bestuurslid_tussenvoegsel_to_yojson x = fix_json_variant bestuurslid_tussenvoegsel_to_yojson x
-
-type bestuurslid_achternaam = BestuurslidAchternaam of string
-[@@deriving yojson]
-let mk_bestuurslid_achternaam x = BestuurslidAchternaam x
-let bestuurslid_achternaam_to_yojson x = fix_json_variant bestuurslid_achternaam_to_yojson x
-
-type bestuurslid = Bestuurslid of {
-    bestuurslid_geslacht: bestuurslid_geslacht option;
-    bestuurslid_voorletters: bestuurslid_voorletters option;
-    bestuurslid_tussenvoegsel: bestuurslid_tussenvoegsel option;
-    bestuurslid_achternaam: bestuurslid_achternaam option;
-  }
-[@@deriving yojson]
-let bestuurlid_to_yojson bestuurslid_to_yojson x = fix_json_variant bestuurslid_to_yojson x
-let mk_bestuurslid_option
-    bestuurslid_geslacht
-    bestuurslid_voorletters
-    bestuurslid_tussenvoegsel
-    bestuurslid_achternaam =
-  if Option.is_some bestuurslid_geslacht
-  || Option.is_some bestuurslid_voorletters
-  || Option.is_some bestuurslid_tussenvoegsel
-  || Option.is_some bestuurslid_achternaam then
-    Some (Bestuurslid {
-        bestuurslid_geslacht;
-        bestuurslid_voorletters ;
-        bestuurslid_tussenvoegsel;
-        bestuurslid_achternaam;
-      })
-  else None
-
-type bestuurslid3_geslacht = Bestuurslid3Geslacht of string
-[@@deriving yojson]
-let mk_bestuurslid3_geslacht x = Bestuurslid3Geslacht x
-let bestuurslid3_geslacht_to_yojson x = fix_json_variant bestuurslid3_geslacht_to_yojson x
-
-type bestuurslid3_voorletters = Bestuurslid3Voorletters of string
-[@@deriving yojson]
-let mk_bestuurslid3_voorletters x = Bestuurslid3Voorletters x
-let bestuurslid3_voorletters_to_yojson x = fix_json_variant bestuurslid3_voorletters_to_yojson x
-
-type bestuurslid3_tussenvoegsel = Bestuurslid3Tussenvoegsel of string
-[@@deriving yojson]
-let mk_bestuurslid3_tussenvoegsel x = Bestuurslid3Tussenvoegsel x
-let bestuurslid3_tussenvoegsel_to_yojson x = fix_json_variant bestuurslid3_tussenvoegsel_to_yojson x
-
-type bestuurslid3_achternaam = Bestuurslid3Achternaam of string
-[@@deriving yojson]
-let mk_bestuurslid3_achternaam x = Bestuurslid3Achternaam x
-let bestuurslid3_achternaam_to_yojson x = fix_json_variant bestuurslid3_achternaam_to_yojson x
-
-type bestuurslid4_geslacht = Bestuurslid4Geslacht of string
-[@@deriving yojson]
-let mk_bestuurslid4_geslacht x = Bestuurslid4Geslacht x
-let bestuurslid4_geslacht_to_yojson x = fix_json_variant bestuurslid4_geslacht_to_yojson x
-
-type bestuurslid4_voorletters = Bestuurslid4Voorletters of string
-[@@deriving yojson]
-let mk_bestuurslid4_voorletters x = Bestuurslid4Voorletters x
-let bestuurslid4_voorletters_to_yojson x = fix_json_variant bestuurslid4_voorletters_to_yojson x
-
-type bestuurslid4_tussenvoegsel = Bestuurslid4Tussenvoegsel of string
-[@@deriving yojson]
-let mk_bestuurslid4_tussenvoegsel x = Bestuurslid4Tussenvoegsel x
-let bestuurslid4_tussenvoegsel_to_yojson x = fix_json_variant bestuurslid4_tussenvoegsel_to_yojson x
-
-type bestuurslid4_achternaam = Bestuurslid4Achternaam of string
-[@@deriving yojson]
-let mk_bestuurslid4_achternaam x = Bestuurslid4Achternaam x
-let bestuurslid4_achternaam_to_yojson x = fix_json_variant bestuurslid4_achternaam_to_yojson x
-
-type bestuurslid5_geslacht = Bestuurslid5Geslacht of string
-[@@deriving yojson]
-let mk_bestuurslid5_geslacht x = Bestuurslid5Geslacht x
-let bestuurslid5_geslacht_to_yojson x = fix_json_variant bestuurslid5_geslacht_to_yojson x
-
-type bestuurslid5_voorletters = Bestuurslid5Voorletters of string
-[@@deriving yojson]
-let mk_bestuurslid5_voorletters x = Bestuurslid5Voorletters x
-let bestuurslid5_voorletters_to_yojson x = fix_json_variant bestuurslid5_voorletters_to_yojson x
-
-type bestuurslid5_tussenvoegsel = Bestuurslid5Tussenvoegsel of string
-[@@deriving yojson]
-let mk_bestuurslid5_tussenvoegsel x = Bestuurslid5Tussenvoegsel x
-let bestuurslid5_tussenvoegsel_to_yojson x = fix_json_variant bestuurslid5_tussenvoegsel_to_yojson x
-
-type bestuurslid5_achternaam = Bestuurslid5Achternaam of string
-[@@deriving yojson]
-let mk_bestuurslid5_achternaam x = Bestuurslid5Achternaam x
-let bestuurslid5_achternaam_to_yojson x = fix_json_variant bestuurslid5_achternaam_to_yojson x
-
-type bestuurslid6_geslacht = Bestuurslid6Geslacht of string
-[@@deriving yojson]
-let mk_bestuurslid6_geslacht x = Bestuurslid6Geslacht x
-let bestuurslid6_geslacht_to_yojson x = fix_json_variant bestuurslid6_geslacht_to_yojson x
-
-type bestuurslid6_voorletters = Bestuurslid6Voorletters of string
-[@@deriving yojson]
-let mk_bestuurslid6_voorletters x = Bestuurslid6Voorletters x
-let bestuurslid6_voorletters_to_yojson x = fix_json_variant bestuurslid6_voorletters_to_yojson x
-
-type bestuurslid6_tussenvoegsel = Bestuurslid6Tussenvoegsel of string
-[@@deriving yojson]
-let mk_bestuurslid6_tussenvoegsel x = Bestuurslid6Tussenvoegsel x
-let bestuurslid6_tussenvoegsel_to_yojson x = fix_json_variant bestuurslid6_tussenvoegsel_to_yojson x
-
-type bestuurslid6_achternaam = Bestuurslid6Achternaam of string
-[@@deriving yojson]
-let mk_bestuurslid6_achternaam x = Bestuurslid6Achternaam x
-let bestuurslid6_achternaam_to_yojson x = fix_json_variant bestuurslid6_achternaam_to_yojson x
+let mk_bestuurslid_option = mk_person_option "bestuurslid" (fun x -> Bestuurslid x)
+let bestuurslid_to_yojson x = fix_json_variant bestuurslid_to_yojson x
 
 type doelstelling = Doelstelling of string
 [@@deriving yojson]
@@ -511,50 +239,10 @@ type contact = Contact of string
 let mk_contact x = Contact x
 let contact_to_yojson x = fix_json_variant contact_to_yojson x
 
-type cpfinaanvragen_geslacht = CpfinaanvragenGeslacht of string
+type cpfinaanvragen = Cpfinaanvragen of string
 [@@deriving yojson]
-let mk_cpfinaanvragen_geslacht x = CpfinaanvragenGeslacht x
-let cpfinaanvragen_geslacht_to_yojson x = fix_json_variant cpfinaanvragen_geslacht_to_yojson x
-
-type cpfinaanvragen_voorletters = CpfinaanvragenVoorletters of string
-[@@deriving yojson]
-let mk_cpfinaanvragen_voorletters x = CpfinaanvragenVoorletters x
-let cpfinaanvragen_voorletters_to_yojson x = fix_json_variant cpfinaanvragen_voorletters_to_yojson x
-
-type cpfinaanvragen_tussenvoegsel = CpfinaanvragenTussenvoegsel of string
-[@@deriving yojson]
-let mk_cpfinaanvragen_tussenvoegsel x = CpfinaanvragenTussenvoegsel x
-let cpfinaanvragen_tussenvoegsel_to_yojson x = fix_json_variant cpfinaanvragen_tussenvoegsel_to_yojson x
-
-type cpfinaanvragen_achternaam = CpfinaanvragenAchternaam of string
-[@@deriving yojson]
-let mk_cpfinaanvragen_achternaam x = CpfinaanvragenAchternaam x
-let cpfinaanvragen_achternaam_to_yojson x = fix_json_variant cpfinaanvragen_achternaam_to_yojson x
-
-type cpfinaanvragen = Cpfinaanvragen of {
-    cpfinaanvragen_geslacht: cpfinaanvragen_geslacht option;
-    cpfinaanvragen_voorletters: cpfinaanvragen_voorletters option;
-    cpfinaanvragen_tussenvoegsel: cpfinaanvragen_tussenvoegsel option;
-    cpfinaanvragen_achternaam: cpfinaanvragen_achternaam option;
-  }
-[@@deriving yojson]
+let mk_cpfinaanvragen_option = mk_person_option "cpfinaanvragen" (fun x -> Cpfinaanvragen x)
 let cpfinaanvragen_to_yojson x = fix_json_variant cpfinaanvragen_to_yojson x
-let mk_cpfinaanvragen_option
-    cpfinaanvragen_geslacht
-    cpfinaanvragen_voorletters
-    cpfinaanvragen_tussenvoegsel
-    cpfinaanvragen_achternaam =
-  if Option.is_some cpfinaanvragen_geslacht
-  || Option.is_some cpfinaanvragen_voorletters
-  || Option.is_some cpfinaanvragen_tussenvoegsel
-  || Option.is_some cpfinaanvragen_achternaam then
-    Some (Cpfinaanvragen {
-        cpfinaanvragen_geslacht;
-        cpfinaanvragen_voorletters;
-        cpfinaanvragen_tussenvoegsel;
-        cpfinaanvragen_achternaam;
-      })
-  else None
 
 type postadres_straat = PostadresStraat of string
 [@@deriving yojson]
@@ -650,6 +338,7 @@ type fonds = Fonds of {
   uuid: string;
   naam_organisatie: naam_organisatie;
   (* --- @todo maak verplicht? *)
+  (* --- @todo remove option *)
   categories: categorie list option;
   website: website option;
   type_organisatie: type_organisatie option;
@@ -773,7 +462,7 @@ let col_naam_organisatie = Column.Column {
 let col_categories = Column.Column {
   name = "categories";
   validate_pattern = validate_text;
-  mk = `Text (List.map (mk_categorie % String.trim) % String.split_on_char ('|'))
+  mk = `Text (List.map (mk_categorie % String.trim) % String.split_on_char (','))
 }
 let col_website = Column.Column {
   name = "website";
@@ -815,185 +504,189 @@ let col_rsin = Column.Column {
   validate_pattern = validate_int;
   mk = `Int mk_rsin;
 }
+
+let id x = x
+let mk_string = id
+
 let col_directeur_algemeen_geslacht = Column.Column {
   name = "directeur_algemeen_geslacht";
   validate_pattern = validate_text;
-  mk = `Text mk_directeur_algemeen_geslacht;
+  mk = `Text mk_string;
 }
 let col_directeur_algemeen_voorletters = Column.Column {
   name = "directeur_algemeen_voorletters";
   validate_pattern = validate_text;
-  mk = `Text mk_directeur_algemeen_voorletters;
+  mk = `Text mk_string;
 }
 let col_directeur_algemeen_tussenvoegsel = Column.Column {
   name = "directeur_algemeen_tussenvoegsel";
   validate_pattern = validate_text;
-  mk = `Text mk_directeur_algemeen_tussenvoegsel;
+  mk = `Text mk_string;
 }
 let col_directeur_algemeen_achternaam = Column.Column {
   name = "directeur_algemeen_achternaam";
   validate_pattern = validate_text;
-  mk = `Text mk_directeur_algemeen_achternaam;
+  mk = `Text mk_string;
 }
 let col_bestuursvoorzitter_geslacht = Column.Column {
   name = "bestuursvoorzitter_geslacht";
   validate_pattern = validate_text;
-  mk = `Text mk_bestuursvoorzitter_geslacht;
+  mk = `Text mk_string;
 }
 let col_bestuursvoorzitter_voorletters = Column.Column {
   name = "bestuursvoorzitter_voorletters";
   validate_pattern = validate_text;
-  mk = `Text mk_bestuursvoorzitter_voorletters;
+  mk = `Text mk_string;
 }
 let col_bestuursvoorzitter_tussenvoegsel = Column.Column {
   name = "bestuursvoorzitter_tussenvoegsel";
   validate_pattern = validate_text;
-  mk = `Text mk_bestuursvoorzitter_tussenvoegsel;
+  mk = `Text mk_string;
 }
 let col_bestuursvoorzitter_achternaam = Column.Column {
   name = "bestuursvoorzitter_achternaam";
   validate_pattern = validate_text;
-  mk = `Text mk_bestuursvoorzitter_achternaam;
+  mk = `Text mk_string;
 }
 let col_bestuurssecretaris_geslacht = Column.Column {
   name = "bestuurssecretaris_geslacht";
   validate_pattern = validate_text;
-  mk = `Text mk_bestuurssecretaris_geslacht;
+  mk = `Text mk_string;
 }
 let col_bestuurssecretaris_voorletters = Column.Column {
   name = "bestuurssecretaris_voorletters";
   validate_pattern = validate_text;
-  mk = `Text mk_bestuurssecretaris_voorletters;
+  mk = `Text mk_string;
 }
 let col_bestuurssecretaris_tussenvoegsel = Column.Column {
   name = "bestuurssecretaris_tussenvoegsel";
   validate_pattern = validate_text;
-  mk = `Text mk_bestuurssecretaris_tussenvoegsel;
+  mk = `Text mk_string;
 }
 let col_bestuurssecretaris_achternaam = Column.Column {
   name = "bestuurssecretaris_achternaam";
   validate_pattern = validate_text;
-  mk = `Text mk_bestuurssecretaris_achternaam;
+  mk = `Text mk_string;
 }
 let col_bestuurspenningmeester_geslacht = Column.Column {
   name = "bestuurspenningmeester_geslacht";
   validate_pattern = validate_text;
-  mk = `Text mk_bestuurspenningmeester_geslacht;
+  mk = `Text mk_string;
 }
 let col_bestuurspenningmeester_voorletters = Column.Column {
   name = "bestuurspenningmeester_voorletters";
   validate_pattern = validate_text;
-  mk = `Text mk_bestuurspenningmeester_voorletters;
+  mk = `Text mk_string;
 }
 let col_bestuurspenningmeester_tussenvoegsel = Column.Column {
   name = "bestuurspenningmeester_tussenvoegsel";
   validate_pattern = validate_text;
-  mk = `Text mk_bestuurspenningmeester_tussenvoegsel;
+  mk = `Text mk_string;
 }
 let col_bestuurspenningmeester_achternaam = Column.Column {
   name = "bestuurspenningmeester_achternaam";
   validate_pattern = validate_text;
-  mk = `Text mk_bestuurspenningmeester_achternaam;
+  mk = `Text mk_string;
 }
 let col_bestuurslid_geslacht = Column.Column {
   name = "bestuurslid_geslacht";
   validate_pattern = validate_text;
-  mk = `Text mk_bestuurslid_geslacht;
+  mk = `Text mk_string;
 }
 let col_bestuurslid_voorletters = Column.Column {
   name = "bestuurslid_voorletters";
   validate_pattern = validate_text;
-  mk = `Text mk_bestuurslid_voorletters;
+  mk = `Text mk_string;
 }
 let col_bestuurslid_tussenvoegsel = Column.Column {
   name = "bestuurslid_tussenvoegsel";
   validate_pattern = validate_text;
-  mk = `Text mk_bestuurslid_tussenvoegsel;
+  mk = `Text mk_string;
 }
 let col_bestuurslid_achternaam = Column.Column {
   name = "bestuurslid_achternaam";
   validate_pattern = validate_text;
-  mk = `Text mk_bestuurslid_achternaam;
+  mk = `Text mk_string;
 }
 let col_bestuurslid3_geslacht = Column.Column {
   name = "bestuurslid3_geslacht";
   validate_pattern = validate_text;
-  mk = `Text mk_bestuurslid3_geslacht;
+  mk = `Text mk_string;
 }
 let col_bestuurslid3_voorletters = Column.Column {
   name = "bestuurslid3_voorletters";
   validate_pattern = validate_text;
-  mk = `Text mk_bestuurslid3_voorletters;
+  mk = `Text mk_string;
 }
 let col_bestuurslid3_tussenvoegsel = Column.Column {
   name = "bestuurslid3_tussenvoegsel";
   validate_pattern = validate_text;
-  mk = `Text mk_bestuurslid3_tussenvoegsel;
+  mk = `Text mk_string;
 }
 let col_bestuurslid3_achternaam = Column.Column {
   name = "bestuurslid3_achternaam";
   validate_pattern = validate_text;
-  mk = `Text mk_bestuurslid3_achternaam;
+  mk = `Text mk_string;
 }
 let col_bestuurslid4_geslacht = Column.Column {
   name = "bestuurslid4_geslacht";
   validate_pattern = validate_text;
-  mk = `Text mk_bestuurslid4_geslacht;
+  mk = `Text mk_string;
 }
 let col_bestuurslid4_voorletters = Column.Column {
   name = "bestuurslid4_voorletters";
   validate_pattern = validate_text;
-  mk = `Text mk_bestuurslid4_voorletters;
+  mk = `Text mk_string;
 }
 let col_bestuurslid4_tussenvoegsel = Column.Column {
   name = "bestuurslid4_tussenvoegsel";
   validate_pattern = validate_text;
-  mk = `Text mk_bestuurslid4_tussenvoegsel;
+  mk = `Text mk_string;
 }
 let col_bestuurslid4_achternaam = Column.Column {
   name = "bestuurslid4_achternaam";
   validate_pattern = validate_text;
-  mk = `Text mk_bestuurslid4_achternaam;
+  mk = `Text mk_string;
 }
 let col_bestuurslid5_geslacht = Column.Column {
   name = "bestuurslid5_geslacht";
   validate_pattern = validate_text;
-  mk = `Text mk_bestuurslid5_geslacht;
+  mk = `Text mk_string;
 }
 let col_bestuurslid5_voorletters = Column.Column {
   name = "bestuurslid5_voorletters";
   validate_pattern = validate_text;
-  mk = `Text mk_bestuurslid5_voorletters;
+  mk = `Text mk_string;
 }
 let col_bestuurslid5_tussenvoegsel = Column.Column {
   name = "bestuurslid5_tussenvoegsel";
   validate_pattern = validate_text;
-  mk = `Text mk_bestuurslid5_tussenvoegsel;
+  mk = `Text mk_string;
 }
 let col_bestuurslid5_achternaam = Column.Column {
   name = "bestuurslid5_achternaam";
   validate_pattern = validate_text;
-  mk = `Text mk_bestuurslid5_achternaam;
+  mk = `Text mk_string;
 }
 let col_bestuurslid6_geslacht = Column.Column {
   name = "bestuurslid6_geslacht";
   validate_pattern = validate_text;
-  mk = `Text mk_bestuurslid6_geslacht;
+  mk = `Text mk_string;
 }
 let col_bestuurslid6_voorletters = Column.Column {
   name = "bestuurslid6_voorletters";
   validate_pattern = validate_text;
-  mk = `Text mk_bestuurslid6_voorletters;
+  mk = `Text mk_string;
 }
 let col_bestuurslid6_tussenvoegsel = Column.Column {
   name = "bestuurslid6_tussenvoegsel";
   validate_pattern = validate_text;
-  mk = `Text mk_bestuurslid6_tussenvoegsel;
+  mk = `Text mk_string;
 }
 let col_bestuurslid6_achternaam = Column.Column {
   name = "bestuurslid6_achternaam";
   validate_pattern = validate_text;
-  mk = `Text mk_bestuurslid6_achternaam;
+  mk = `Text mk_string;
 }
 let col_doelstelling = Column.Column {
   name = "doelstelling";
@@ -1153,22 +846,22 @@ let col_contact = Column.Column {
 let col_cpfinaanvragen_geslacht = Column.Column {
   name = "cpfinaanvragen_geslacht";
   validate_pattern = validate_text;
-  mk = `Text mk_cpfinaanvragen_geslacht;
+  mk = `Text mk_string;
 }
 let col_cpfinaanvragen_voorletters = Column.Column {
   name = "cpfinaanvragen_voorletters";
   validate_pattern = validate_text;
-  mk = `Text mk_cpfinaanvragen_voorletters;
+  mk = `Text mk_string;
 }
 let col_cpfinaanvragen_tussenvoegsel = Column.Column {
   name = "cpfinaanvragen_tussenvoegsel";
   validate_pattern = validate_text;
-  mk = `Text mk_cpfinaanvragen_tussenvoegsel;
+  mk = `Text mk_string;
 }
 let col_cpfinaanvragen_achternaam = Column.Column {
   name = "cpfinaanvragen_achternaam";
   validate_pattern = validate_text;
-  mk = `Text mk_cpfinaanvragen_achternaam;
+  mk = `Text mk_string;
 }
 let col_postadres_straat = Column.Column {
   name = "postadres_straat";
