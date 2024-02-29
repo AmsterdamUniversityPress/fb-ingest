@@ -337,9 +337,7 @@ let type_organisatie_to_yojson x = fix_json_variant type_organisatie_to_yojson x
 type fonds = Fonds of {
   uuid: string;
   naam_organisatie: naam_organisatie;
-  (* --- @todo maak verplicht? *)
-  (* --- @todo remove option *)
-  categories: categorie list option;
+  categories: categorie list;
   website: website option;
   type_organisatie: type_organisatie option;
   naam_moeder_organisatie: naam_moeder_organisatie option;
@@ -347,7 +345,6 @@ type fonds = Fonds of {
   rechtsvorm: rechtsvorm;
   kvk_number: kvk_number option;
   (* // --- @todo maak verplicht *)
-  (* // --- @todo remove Ja & Cultuur *)
   anbi_status: anbi_status option;
   rsin: rsin option;
   (* // --- @todo alle namen samenvoegen, e.g. maak directeur_algemeen_naam_en_aanhef, aanhef optioneel, "Mw. C. van der Veld" *)
@@ -435,6 +432,9 @@ let _validate_url_full =
 
 let validate_url = _validate_url_strict
 
+let id x = x
+let mk_string = id
+
 let bool_of_string_nl = function
   | "Ja" -> true
   | "ja" -> true
@@ -497,10 +497,6 @@ let col_rsin = Column.Column {
   validate_pattern = validate_int;
   mk = `Int mk_rsin;
 }
-
-let id x = x
-let mk_string = id
-
 let col_directeur_algemeen_geslacht = Column.Column {
   name = "directeur_algemeen_geslacht";
   validate_pattern = validate_text;

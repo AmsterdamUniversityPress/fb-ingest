@@ -14,6 +14,12 @@ let process_row_validate row_num = function
     let do_col' col_t =
       let () = col_num := !col_num + 1 in
       Process.do_col (row_num, !col_num) (xs $ !col_num) col_t ~skip_validate:false in
+    let do_col_non_empty_list' col_t =
+      let () = col_num := !col_num + 1 in
+      let* res = Process.do_col (row_num, !col_num) (xs $ !col_num) col_t ~skip_validate:false in
+      match res with
+        | [] -> Error (`Msg (Fmt.str "Got empty list (row_num=%d col_num=%d)" row_num !col_num))
+        | _ -> Ok res in
     let do_col_optional' col_t =
       let () = col_num := !col_num + 1 in
       Process.do_col_optional (row_num, !col_num) (xs $ !col_num) col_t ~skip_validate:false in
@@ -24,7 +30,7 @@ let process_row_validate row_num = function
     let* _id = do_col' col_id in
     let uuid = Util.mk_random_uuid () in
     let* naam_organisatie = do_col' col_naam_organisatie in
-    let* categories = do_col_optional' col_categories in
+    let* categories = do_col_non_empty_list' col_categories in
     let* website = do_col_optional' col_website in
     let* type_organisatie = do_col_optional' col_type_organisatie in
     let* naam_moeder_organisatie = do_col_optional' col_naam_moeder_organisatie in
