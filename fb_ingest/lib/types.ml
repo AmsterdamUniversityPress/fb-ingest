@@ -244,59 +244,27 @@ type cpfinaanvragen = Cpfinaanvragen of string
 let mk_cpfinaanvragen_option = mk_person_option "cpfinaanvragen" (fun x -> Cpfinaanvragen x)
 let cpfinaanvragen_to_yojson x = fix_json_variant cpfinaanvragen_to_yojson x
 
-type postadres_straat = PostadresStraat of string
-[@@deriving yojson]
-let mk_postadres_straat x = PostadresStraat x
-let postadres_straat_to_yojson x = fix_json_variant postadres_straat_to_yojson x
-
-type postadres_huisnummer = PostadresHuisnummer of string
-[@@deriving yojson]
-let mk_postadres_huisnummer x = PostadresHuisnummer x
-let postadres_huisnummer_to_yojson x = fix_json_variant postadres_huisnummer_to_yojson x
-
-type postadres_huisnummer_ext = PostadresHuisnummerExt of string
-[@@deriving yojson]
-let mk_postadres_huisnummer_ext x = PostadresHuisnummerExt x
-let postadres_huisnummer_ext_to_yojson x = fix_json_variant postadres_huisnummer_ext_to_yojson x
-
-type postadres_postcode = PostadresPostcode of string
-[@@deriving yojson]
-let mk_postadres_postcode x = PostadresPostcode x
-let postadres_postcode_to_yojson x = fix_json_variant postadres_postcode_to_yojson x
-
-type postadres_plaats = PostadresPlaats of string
-[@@deriving yojson]
-let mk_postadres_plaats x = PostadresPlaats x
-let postadres_plaats_to_yojson x = fix_json_variant postadres_plaats_to_yojson x
-
-type postadres = Postadres of {
-    postadres_straat: postadres_straat option;
-    postadres_huisnummer: postadres_huisnummer option;
-    postadres_huisnummer_ext: postadres_huisnummer_ext option;
-    postadres_postcode: postadres_postcode option;
-    postadres_plaats: postadres_plaats option
-  }
+type postadres = Postadres of string
 [@@deriving yojson]
 let postadres_to_yojson x = fix_json_variant postadres_to_yojson x
-let mk_postadres_option
-    postadres_straat
-    postadres_huisnummer
-    postadres_huisnummer_ext
-    postadres_postcode
-    postadres_plaats =
-  if Option.is_some postadres_straat
-  || Option.is_some postadres_huisnummer
-  || Option.is_some postadres_huisnummer_ext
-  || Option.is_some postadres_postcode
-  || Option.is_some postadres_plaats then
-    Some (Postadres {
-        postadres_straat;
-        postadres_huisnummer;
-        postadres_huisnummer_ext;
-        postadres_postcode;
-        postadres_plaats;
-      })
-  else None
+
+let mk_postadres_option (row_num, col_num) straat huisnummer huisnummer_ext postcode plaats =
+  let warn' s = Fmt.epr "Warning: %s, row_num=%d, col_num=%d, skipping@." s row_num col_num in
+  let args = [straat; huisnummer; huisnummer_ext; postcode; plaats] in
+  if Util.Option.all_none args then None
+  else if Option.(is_some huisnummer_ext && is_none huisnummer) then
+    let () = warn' (Fmt.str "Invalid huisnummer/huisnummer_ext combination, straat was %a" (Fmt.(option string)) straat) in
+    None
+  else match List.find_opt Option.is_none [straat; huisnummer; postcode; plaats] with
+    | Some _ -> let () = warn' (Fmt.str "Missing postadres_xxx fields") in None
+    | None ->
+      (* --- @todo kan mooier *)
+      let huisnummer' = Util.Option.join_some "" [huisnummer; huisnummer_ext] in
+      let huisnummer'' = match huisnummer' with
+        | "" -> None
+        | x -> Some x in
+      let args' = [straat; huisnummer''; postcode; plaats] in
+      Some (Postadres (Util.Option.join_some " " args'))
 
 type email = Email of string
 [@@deriving yojson]
@@ -346,15 +314,11 @@ type fonds = Fonds of {
   kvk_number: kvk_number option;
   anbi_status: anbi_status;
   rsin: rsin option;
-  (* // --- @todo alle namen samenvoegen, e.g. maak directeur_algemeen_naam_en_aanhef, aanhef optioneel, "Mw. C. van der Veld" *)
-
   directeur_algemeen: directeur_algemeen option;
-  (* // --- @todo bestuursleden_hoofd *)
   bestuursvoorzitter: bestuursvoorzitter option;
   bestuurssecretaris: bestuurssecretaris option;
   bestuurspenningmeester: bestuurspenningmeester option;
-  (* // --- @todo bestuursleden_overig *)
-  bestuursleden: bestuurslid list;
+  bestuursleden_overig: bestuurslid list;
   doelstelling: doelstelling;
   stichter: stichter option;
   historie: historie option;
@@ -854,27 +818,27 @@ let col_cpfinaanvragen_achternaam = Column.Column {
 let col_postadres_straat = Column.Column {
   name = "postadres_straat";
   validate_pattern = validate_text;
-  mk = `Text mk_postadres_straat;
+  mk = `Text mk_string;
 }
 let col_postadres_huisnummer = Column.Column {
   name = "postadres_huisnummer";
   validate_pattern = validate_text;
-  mk = `Text mk_postadres_huisnummer;
+  mk = `Text mk_string;
 }
 let col_postadres_huisnummer_ext = Column.Column {
   name = "postadres_huisnummer_ext";
   validate_pattern = validate_text;
-  mk = `Text mk_postadres_huisnummer_ext;
+  mk = `Text mk_string;
 }
 let col_postadres_postcode = Column.Column {
   name = "postadres_postcode";
   validate_pattern = validate_text;
-  mk = `Text mk_postadres_postcode;
+  mk = `Text mk_string;
 }
 let col_postadres_plaats = Column.Column {
   name = "postadres_plaats";
   validate_pattern = validate_text;
-  mk = `Text mk_postadres_plaats;
+  mk = `Text mk_string;
 }
 let col_email = Column.Column {
   name = "email";

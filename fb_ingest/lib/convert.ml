@@ -112,7 +112,7 @@ let process_row_validate row_num = function
       bestuurslid6_voorletters
       bestuurslid6_tussenvoegsel
       bestuurslid6_achternaam in
-    let bestuursleden =
+    let bestuursleden_overig =
       [ bestuurslid3; bestuurslid4; bestuurslid5; bestuurslid6; ]
       |> List.filter_map id in
     let* doelstelling = do_col' col_doelstelling in
@@ -161,6 +161,7 @@ let process_row_validate row_num = function
     let* postadres_postcode = do_col_optional' col_postadres_postcode in
     let* postadres_plaats = do_col_optional' col_postadres_plaats in
     let postadres = mk_postadres_option
+      (row_num, !col_num)
       postadres_straat
       postadres_huisnummer
       postadres_huisnummer_ext
@@ -186,7 +187,7 @@ let process_row_validate row_num = function
         bestuursvoorzitter;
         bestuurssecretaris;
         bestuurspenningmeester;
-        bestuursleden;
+        bestuursleden_overig;
         doelstelling;
         historie;
         stichter;
