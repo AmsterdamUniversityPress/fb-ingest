@@ -344,8 +344,7 @@ type fonds = Fonds of {
   oprichtings_datum: oprichtings_datum option;
   rechtsvorm: rechtsvorm;
   kvk_number: kvk_number option;
-  (* // --- @todo maak verplicht *)
-  anbi_status: anbi_status option;
+  anbi_status: anbi_status;
   rsin: rsin option;
   (* // --- @todo alle namen samenvoegen, e.g. maak directeur_algemeen_naam_en_aanhef, aanhef optioneel, "Mw. C. van der Veld" *)
 
