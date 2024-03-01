@@ -52,34 +52,34 @@ let rsin_to_yojson x = fix_json_variant rsin_to_yojson x
 type directeur_algemeen = DirecteurAlgemeen of string
 [@@deriving yojson]
 
-let mk_person_option kind mk geslacht voorletters tussenvoegsel achternaam =
+let mk_person_option (kind, row_num, col_num) mk geslacht voorletters tussenvoegsel achternaam =
   let args = [geslacht; voorletters; tussenvoegsel; achternaam] in
   if Util.Option.all_none args then None else
   if Option.is_none achternaam then
-    let () = Fmt.epr "Warning: achternaam is empty for %s, skipping@." kind in
+    let () = Fmt.epr "Warning: achternaam is empty for %s, row=%d, col=%d, skipping row@." kind row_num col_num in
     None else
   Some (mk (Util.Option.join_some " " args))
 
-let mk_directeur_algemeen_option = mk_person_option "directeur_algemeen" (fun x -> DirecteurAlgemeen x)
+let mk_directeur_algemeen_option row_num col_num = mk_person_option ("directeur_algemeen", row_num, col_num) (fun x -> DirecteurAlgemeen x)
 
 type bestuursvoorzitter = Bestuursvoorzitter of string
 [@@deriving yojson]
-let mk_bestuursvoorzitter_option = mk_person_option "bestuursvoorzitter" (fun x -> Bestuursvoorzitter x)
+let mk_bestuursvoorzitter_option row_num col_num = mk_person_option ("bestuursvoorzitter", row_num, col_num) (fun x -> Bestuursvoorzitter x)
 let bestuursvoorzitter_to_yojson x = fix_json_variant bestuursvoorzitter_to_yojson x
 
 type bestuurssecretaris = Bestuurssecretaris of string
 [@@deriving yojson]
-let mk_bestuurssecretaris_option = mk_person_option "bestuurssecretaris" (fun x -> Bestuurssecretaris x)
+let mk_bestuurssecretaris_option row_num col_num = mk_person_option ("bestuurssecretaris", row_num, col_num) (fun x -> Bestuurssecretaris x)
 let bestuurssecretaris_to_yojson x = fix_json_variant bestuurssecretaris_to_yojson x
 
 type bestuurspenningmeester = Bestuurspenningmeester of string
 [@@deriving yojson]
-let mk_bestuurspenningmeester_option = mk_person_option "bestuurspenningmeester" (fun x -> Bestuurspenningmeester x)
+let mk_bestuurspenningmeester_option row_num col_num = mk_person_option ("bestuurspenningmeester", row_num, col_num) (fun x -> Bestuurspenningmeester x)
 let bestuurspenningmeester_to_yojson x = fix_json_variant bestuurspenningmeester_to_yojson x
 
 type bestuurslid = Bestuurslid of string
 [@@deriving yojson]
-let mk_bestuurslid_option = mk_person_option "bestuurslid" (fun x -> Bestuurslid x)
+let mk_bestuurslid_option row_num col_num = mk_person_option ("bestuurslid", row_num, col_num) (fun x -> Bestuurslid x)
 let bestuurslid_to_yojson x = fix_json_variant bestuurslid_to_yojson x
 
 type doelstelling = Doelstelling of string
@@ -241,7 +241,7 @@ let contact_to_yojson x = fix_json_variant contact_to_yojson x
 
 type cpfinaanvragen = Cpfinaanvragen of string
 [@@deriving yojson]
-let mk_cpfinaanvragen_option = mk_person_option "cpfinaanvragen" (fun x -> Cpfinaanvragen x)
+let mk_cpfinaanvragen_option row_num col_num = mk_person_option ("cpfinaanvragen", row_num, col_num) (fun x -> Cpfinaanvragen x)
 let cpfinaanvragen_to_yojson x = fix_json_variant cpfinaanvragen_to_yojson x
 
 type postadres = Postadres of string
@@ -249,7 +249,7 @@ type postadres = Postadres of string
 let postadres_to_yojson x = fix_json_variant postadres_to_yojson x
 
 let mk_postadres_option (row_num, col_num) straat huisnummer huisnummer_ext postcode plaats =
-  let warn' s = Fmt.epr "Warning: %s, row_num=%d, col_num=%d, skipping@." s row_num col_num in
+  let warn' s = Fmt.epr "Warning: %s, row_num=%d, col_num=%d, skipping row@." s row_num col_num in
   let args = [straat; huisnummer; huisnummer_ext; postcode; plaats] in
   if Util.Option.all_none args then None
   else if Option.(is_some huisnummer_ext && is_none huisnummer) then

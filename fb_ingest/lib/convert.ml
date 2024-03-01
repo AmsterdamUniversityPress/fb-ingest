@@ -43,7 +43,7 @@ let process_row_validate row_num = function
     let* directeur_algemeen_voorletters = do_col_optional' col_directeur_algemeen_voorletters in
     let* directeur_algemeen_tussenvoegsel = do_col_optional' col_directeur_algemeen_tussenvoegsel in
     let* directeur_algemeen_achternaam = do_col_optional' col_directeur_algemeen_achternaam in
-    let directeur_algemeen = mk_directeur_algemeen_option
+    let directeur_algemeen = mk_directeur_algemeen_option row_num !col_num
         directeur_algemeen_geslacht
         directeur_algemeen_voorletters
         directeur_algemeen_tussenvoegsel
@@ -53,7 +53,7 @@ let process_row_validate row_num = function
     let* bestuursvoorzitter_voorletters = do_col_optional' col_bestuursvoorzitter_voorletters in
     let* bestuursvoorzitter_tussenvoegsel = do_col_optional' col_bestuursvoorzitter_tussenvoegsel in
     let* bestuursvoorzitter_achternaam = do_col_optional' col_bestuursvoorzitter_achternaam in
-    let bestuursvoorzitter = mk_bestuursvoorzitter_option
+    let bestuursvoorzitter = mk_bestuursvoorzitter_option row_num !col_num
         bestuursvoorzitter_geslacht
         bestuursvoorzitter_voorletters
         bestuursvoorzitter_tussenvoegsel
@@ -62,7 +62,7 @@ let process_row_validate row_num = function
     let* bestuurssecretaris_voorletters = do_col_optional' col_bestuurssecretaris_voorletters in
     let* bestuurssecretaris_tussenvoegsel = do_col_optional' col_bestuurssecretaris_tussenvoegsel in
     let* bestuurssecretaris_achternaam = do_col_optional' col_bestuurssecretaris_achternaam in
-    let bestuurssecretaris = mk_bestuurssecretaris_option
+    let bestuurssecretaris = mk_bestuurssecretaris_option row_num !col_num
       bestuurssecretaris_geslacht
       bestuurssecretaris_voorletters
       bestuurssecretaris_tussenvoegsel
@@ -71,7 +71,7 @@ let process_row_validate row_num = function
     let* bestuurspenningmeester_voorletters = do_col_optional' col_bestuurspenningmeester_voorletters in
     let* bestuurspenningmeester_tussenvoegsel = do_col_optional' col_bestuurspenningmeester_tussenvoegsel in
     let* bestuurspenningmeester_achternaam = do_col_optional' col_bestuurspenningmeester_achternaam in
-    let bestuurspenningmeester = mk_bestuurspenningmeester_option
+    let bestuurspenningmeester = mk_bestuurspenningmeester_option row_num !col_num
       bestuurspenningmeester_geslacht
       bestuurspenningmeester_voorletters
       bestuurspenningmeester_tussenvoegsel
@@ -80,7 +80,7 @@ let process_row_validate row_num = function
     let* bestuurslid3_voorletters = do_col_optional' col_bestuurslid_voorletters in
     let* bestuurslid3_tussenvoegsel = do_col_optional' col_bestuurslid_tussenvoegsel in
     let* bestuurslid3_achternaam = do_col_optional' col_bestuurslid_achternaam in
-    let bestuurslid3 = mk_bestuurslid_option
+    let bestuurslid3 = mk_bestuurslid_option row_num !col_num
       bestuurslid3_geslacht
       bestuurslid3_voorletters
       bestuurslid3_tussenvoegsel
@@ -89,7 +89,7 @@ let process_row_validate row_num = function
     let* bestuurslid4_voorletters = do_col_optional' col_bestuurslid_voorletters in
     let* bestuurslid4_tussenvoegsel = do_col_optional' col_bestuurslid_tussenvoegsel in
     let* bestuurslid4_achternaam = do_col_optional' col_bestuurslid_achternaam in
-    let bestuurslid4 = mk_bestuurslid_option
+    let bestuurslid4 = mk_bestuurslid_option row_num !col_num
       bestuurslid4_geslacht
       bestuurslid4_voorletters
       bestuurslid4_tussenvoegsel
@@ -98,7 +98,7 @@ let process_row_validate row_num = function
     let* bestuurslid5_voorletters = do_col_optional' col_bestuurslid_voorletters in
     let* bestuurslid5_tussenvoegsel = do_col_optional' col_bestuurslid_tussenvoegsel in
     let* bestuurslid5_achternaam = do_col_optional' col_bestuurslid_achternaam in
-    let bestuurslid5 = mk_bestuurslid_option
+    let bestuurslid5 = mk_bestuurslid_option row_num !col_num
       bestuurslid5_geslacht
       bestuurslid5_voorletters
       bestuurslid5_tussenvoegsel
@@ -107,7 +107,7 @@ let process_row_validate row_num = function
     let* bestuurslid6_voorletters = do_col_optional' col_bestuurslid_voorletters in
     let* bestuurslid6_tussenvoegsel = do_col_optional' col_bestuurslid_tussenvoegsel in
     let* bestuurslid6_achternaam = do_col_optional' col_bestuurslid_achternaam in
-    let bestuurslid6 = mk_bestuurslid_option
+    let bestuurslid6 = mk_bestuurslid_option row_num !col_num
       bestuurslid6_geslacht
       bestuurslid6_voorletters
       bestuurslid6_tussenvoegsel
@@ -150,7 +150,7 @@ let process_row_validate row_num = function
     let* cpfinaanvragen_voorletters = do_col_optional' col_cpfinaanvragen_voorletters in
     let* cpfinaanvragen_tussenvoegsel = do_col_optional' col_cpfinaanvragen_tussenvoegsel in
     let* cpfinaanvragen_achternaam = do_col_optional' col_cpfinaanvragen_achternaam in
-    let cpfinaanvragen = mk_cpfinaanvragen_option
+    let cpfinaanvragen = mk_cpfinaanvragen_option row_num !col_num
       cpfinaanvragen_geslacht
       cpfinaanvragen_voorletters
       cpfinaanvragen_tussenvoegsel
