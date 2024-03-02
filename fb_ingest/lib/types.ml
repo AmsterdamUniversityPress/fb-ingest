@@ -7,10 +7,12 @@ let fix_json_variant f x =
   | `List xs -> List.nth xs 1
   | _ -> failwith "unexpected: fix_json_variant got a non-list"
 
-type url = Url of string
-[@@deriving yojson]
-
-let url_to_yojson x = fix_json_variant url_to_yojson x
+module Url = struct
+  type t = Url of string
+  [@@deriving yojson]
+  let map f (Url s) = Url (f s)
+  let to_yojson x = fix_json_variant to_yojson x
+end
 
 type id = Id of int
 [@@deriving yojson]
@@ -18,7 +20,7 @@ type naam_organisatie = NaamOrganisatie of string
 [@@deriving yojson]
 type categorie = Categorie of string
 [@@deriving yojson]
-type website = Website of url
+type website = Website of Url.t
 [@@deriving yojson]
 type type_organisatie = TypeOrganisatie of string
 [@@deriving yojson]
@@ -204,7 +206,7 @@ type aanvraag_procedure = AanvraagProcedure of string
 let mk_aanvraag_procedure x = AanvraagProcedure x
 let aanvraag_procedure_to_yojson x = fix_json_variant aanvraag_procedure_to_yojson x
 
-type url_aanvraag_procedure = UrlAanvraagProcedure of url
+type url_aanvraag_procedure = UrlAanvraagProcedure of Url.t
 [@@deriving yojson]
 let mk_url_aanvraag_procedure x = UrlAanvraagProcedure x
 let url_aanvraag_procedure_to_yojson x = fix_json_variant url_aanvraag_procedure_to_yojson x
@@ -229,7 +231,7 @@ type boekjaar = Boekjaar of string
 let mk_boekjaar x = Boekjaar x
 let boekjaar_to_yojson x = fix_json_variant boekjaar_to_yojson x
 
-type url_jaarverslag = UrlJaarverslag of url
+type url_jaarverslag = UrlJaarverslag of Url.t
 [@@deriving yojson]
 let mk_url_jaarverslag x = UrlJaarverslag x
 let url_jaarverslag_to_yojson x = fix_json_variant url_jaarverslag_to_yojson x
@@ -289,11 +291,18 @@ let trefwoord_to_yojson x = fix_json_variant trefwoord_to_yojson x
 let mk_naam_moeder_organisatie x = NaamMoederOrganisatie x
 let naam_moeder_organisatie_to_yojson x = fix_json_variant naam_moeder_organisatie_to_yojson x
 
-let mk_url x = Url x
+let mk_url x = Url.Url x
 let mk_id d = Id d
 let mk_naam_organisatie x = NaamOrganisatie x
 let mk_categorie x = Categorie x
-let mk_website x = Website x
+let mk_website url' =
+  let f x =
+    let no_protocol' =
+      not (String.starts_with ~prefix:"http://" x) &&
+      not (String.starts_with ~prefix:"https://" x) in
+    if no_protocol' then "http://" ^ x
+    else x in
+  Website (Url.map f url')
 let mk_type_organisatie x = TypeOrganisatie x
 
 let id_to_yojson x = fix_json_variant id_to_yojson x
@@ -373,7 +382,7 @@ module Column = struct
     | `Text of string -> 'a
     (* | `Text of string list -> 'a *)
     (* | `Text' of string array -> 'a *)
-    | `Url of url -> 'a
+    | `Url of Url.t -> 'a
   ]
   type 'a t = Column of { name: string; validate_pattern: string; mk: 'a mk; }
   let name (Column t) = t.name
