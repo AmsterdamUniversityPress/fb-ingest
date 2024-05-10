@@ -4,6 +4,14 @@ module R = Rresult.R
 let (let*) = Rresult.R.bind
 let ($) = Util.($)
 
+let normalize_keyword kw = kw
+  |> String.lowercase_ascii
+  |> String.trim
+let fix_categorie = map_categorie normalize_keyword
+let fix_trefwoorden = map_trefwoord normalize_keyword
+let normalize_categories = List.map fix_categorie
+let normalize_trefwoorden = List.map fix_trefwoorden
+
 let process_row_validate row_num = function
   (* --- @todo repeated *)
   | xs when List.length xs <> num_cols ->
@@ -30,7 +38,7 @@ let process_row_validate row_num = function
     let* _id = do_col' col_id in
     let uuid = Util.mk_random_uuid () in
     let* naam_organisatie = do_col' col_naam_organisatie in
-    let* categories = do_col_non_empty_list' col_categories in
+    let* categories = Rresult.R.map normalize_categories (do_col_non_empty_list' col_categories) in
     let* website = do_col_optional' col_website in
     let* type_organisatie = do_col_optional' col_type_organisatie in
     let* naam_moeder_organisatie = do_col_optional' col_naam_moeder_organisatie in
@@ -170,7 +178,7 @@ let process_row_validate row_num = function
     let* email = do_col_optional' col_email in
     let* telefoon = do_col_optional' col_telefoon in
     let* telefoon_fin_aanvragen = do_col_optional' col_telefoon_fin_aanvragen in
-    let* trefwoorden = do_col' col_trefwoorden in
+    let* trefwoorden = Rresult.R.map normalize_trefwoorden (do_col' col_trefwoorden) in
     Ok (Fonds {
         uuid;
         naam_organisatie;

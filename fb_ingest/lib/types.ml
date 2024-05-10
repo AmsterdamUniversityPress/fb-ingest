@@ -20,6 +20,7 @@ type naam_organisatie = NaamOrganisatie of string
 [@@deriving yojson]
 type categorie = Categorie of string
 [@@deriving yojson]
+let map_categorie f (Categorie x) = Categorie (f x)
 type website = Website of Url.t
 [@@deriving yojson]
 type type_organisatie = TypeOrganisatie of string
@@ -287,6 +288,7 @@ type trefwoord= Trefwoord of string
 [@@deriving yojson]
 let mk_trefwoord x = Trefwoord x
 let trefwoord_to_yojson x = fix_json_variant trefwoord_to_yojson x
+let map_trefwoord f (Trefwoord x) = Trefwoord (f x)
 
 let mk_naam_moeder_organisatie x = NaamMoederOrganisatie x
 let naam_moeder_organisatie_to_yojson x = fix_json_variant naam_moeder_organisatie_to_yojson x
