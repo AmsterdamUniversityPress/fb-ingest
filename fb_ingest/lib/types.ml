@@ -147,6 +147,29 @@ type plaats_in_nederland = PlaatsInNederland of string
 let mk_plaats_in_nederland x = PlaatsInNederland x
 let plaats_in_nederland_to_yojson x = fix_json_variant plaats_in_nederland_to_yojson x
 
+(* --- regio is a combination of landen, regio_in_nederland, plaats_in_nederland *)
+type regio = Regio of string
+[@@deriving yojson]
+let regio_to_yojson x = fix_json_variant regio_to_yojson x
+
+let split_regio s =
+  let re' = Re.Perl.compile_pat "\\s*,\\s*" in
+  Re.split re' s
+
+let mk_regios landen_opt regio_in_nederland_opt plaats_in_nederland_opt =
+  let split_landen (Landen l) = split_regio l in
+  let split_regio_nl (RegioInNederland r) = split_regio r in
+  let split_plaats_nl (PlaatsInNederland p) = split_regio p in
+  let to_list' f = function
+    | None -> []
+    | Some x -> f x in
+  let landen = to_list' split_landen landen_opt in
+  let regio_nl = to_list' split_regio_nl regio_in_nederland_opt in
+  let plaats_nl = to_list' split_plaats_nl plaats_in_nederland_opt in
+  [landen; regio_nl; plaats_nl]
+  |> List.concat
+  |> List.map (fun x -> Regio x)
+
 type besteding_budget = BestedingBudget of string
 [@@deriving yojson]
 let mk_besteding_budget x = BestedingBudget x
@@ -339,9 +362,10 @@ type fonds = Fonds of {
   activiteiten_beschrijving: activiteiten_beschrijving option;
   interventie_niveau: interventie_niveau option;
   werk_regio: werk_regio option;
-  landen: landen option;
-  regio_in_nederland: regio_in_nederland option;
-  plaats_in_nederland: plaats_in_nederland option;
+  regios: regio list;
+  (* landen: landen option; *)
+  (* regio_in_nederland: regio_in_nederland option; *)
+  (* plaats_in_nederland: plaats_in_nederland option; *)
   besteding_budget: besteding_budget option;
   ondersteunde_projecten: ondersteunde_projecten option;
   fin_fonds: fin_fonds option;

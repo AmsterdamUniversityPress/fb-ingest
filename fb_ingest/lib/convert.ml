@@ -5,6 +5,7 @@ let (let*) = Rresult.R.bind
 let ($) = Util.($)
 
 let normalize_keyword kw = kw
+  (* --- note, we do lowercase normalization in elastic as well *)
   |> String.lowercase_ascii
   |> String.trim
 let fix_categorie = map_categorie normalize_keyword
@@ -132,9 +133,12 @@ let process_row_validate row_num = function
     let* activiteiten_beschrijving = do_col_optional' col_activiteiten_beschrijving in
     let* interventie_niveau = do_col_optional' col_interventie_niveau in
     let* werk_regio = do_col_optional' col_werk_regio in
+
     let* landen = do_col_optional' col_landen in
     let* regio_in_nederland = do_col_optional' col_regio_in_nederland in
     let* plaats_in_nederland = do_col_optional' col_plaats_in_nederland in
+    let regios = mk_regios landen regio_in_nederland plaats_in_nederland in
+
     let* besteding_budget = do_col_optional' col_besteding_budget in
     let* ondersteunde_projecten = do_col_optional' col_ondersteunde_projecten in
     let* fin_fonds = do_col_optional' col_fin_fonds in
@@ -205,9 +209,10 @@ let process_row_validate row_num = function
         activiteiten_beschrijving;
         interventie_niveau;
         werk_regio;
-        landen;
-        regio_in_nederland;
-        plaats_in_nederland;
+        (* landen; *)
+        (* regio_in_nederland; *)
+        (* plaats_in_nederland; *)
+        regios;
         besteding_budget;
         ondersteunde_projecten;
         fin_fonds;
