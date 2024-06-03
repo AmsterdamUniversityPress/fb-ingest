@@ -363,9 +363,9 @@ type fonds = Fonds of {
   interventie_niveau: interventie_niveau option;
   werk_regio: werk_regio option;
   regios: regio list;
-  (* landen: landen option; *)
-  (* regio_in_nederland: regio_in_nederland option; *)
-  (* plaats_in_nederland: plaats_in_nederland option; *)
+  landen: landen option;
+  regio_in_nederland: regio_in_nederland option;
+  plaats_in_nederland: plaats_in_nederland option;
   besteding_budget: besteding_budget option;
   ondersteunde_projecten: ondersteunde_projecten option;
   fin_fonds: fin_fonds option;

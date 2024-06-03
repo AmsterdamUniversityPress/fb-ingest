@@ -209,9 +209,9 @@ let process_row_validate row_num = function
         activiteiten_beschrijving;
         interventie_niveau;
         werk_regio;
-        (* landen; *)
-        (* regio_in_nederland; *)
-        (* plaats_in_nederland; *)
+        landen;
+        regio_in_nederland;
+        plaats_in_nederland;
         regios;
         besteding_budget;
         ondersteunde_projecten;
