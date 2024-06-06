@@ -14,6 +14,15 @@ module Url = struct
   let to_yojson x = fix_json_variant to_yojson x
 end
 
+let url_fix_protocol =
+  let f url' =
+    let no_protocol' =
+      not (String.starts_with ~prefix:"http://" url') &&
+      not (String.starts_with ~prefix:"https://" url') in
+    if no_protocol' then "http://" ^ url'
+    else url' in
+  Url.map f
+
 type id = Id of int
 [@@deriving yojson]
 type naam_organisatie = NaamOrganisatie of string
@@ -232,7 +241,7 @@ let aanvraag_procedure_to_yojson x = fix_json_variant aanvraag_procedure_to_yojs
 
 type url_aanvraag_procedure = UrlAanvraagProcedure of Url.t
 [@@deriving yojson]
-let mk_url_aanvraag_procedure x = UrlAanvraagProcedure x
+let mk_url_aanvraag_procedure x = UrlAanvraagProcedure (url_fix_protocol x)
 let url_aanvraag_procedure_to_yojson x = fix_json_variant url_aanvraag_procedure_to_yojson x
 
 type eigen_vermogen = EigenVermogen of string
@@ -257,7 +266,7 @@ let boekjaar_to_yojson x = fix_json_variant boekjaar_to_yojson x
 
 type url_jaarverslag = UrlJaarverslag of Url.t
 [@@deriving yojson]
-let mk_url_jaarverslag x = UrlJaarverslag x
+let mk_url_jaarverslag x = UrlJaarverslag (url_fix_protocol x)
 let url_jaarverslag_to_yojson x = fix_json_variant url_jaarverslag_to_yojson x
 
 type contact = Contact of string
@@ -320,14 +329,7 @@ let mk_url x = Url.Url x
 let mk_id d = Id d
 let mk_naam_organisatie x = NaamOrganisatie x
 let mk_categorie x = Categorie x
-let mk_website url' =
-  let f x =
-    let no_protocol' =
-      not (String.starts_with ~prefix:"http://" x) &&
-      not (String.starts_with ~prefix:"https://" x) in
-    if no_protocol' then "http://" ^ x
-    else x in
-  Website (Url.map f url')
+let mk_website url' = Website (url_fix_protocol url')
 let mk_type_organisatie x = TypeOrganisatie x
 
 let id_to_yojson x = fix_json_variant id_to_yojson x
