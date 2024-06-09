@@ -455,7 +455,7 @@ let col_naam_organisatie = Column.Column {
 let col_categories = Column.Column {
   name = "categories";
   validate_pattern = validate_text;
-  mk = `Text (List.map (mk_categorie % String.trim) % String.split_on_char (','))
+  mk = `Text (List.map (mk_categorie % String.trim) % String.split_on_char (';'))
 }
 let col_website = Column.Column {
   name = "website";
