@@ -36,7 +36,7 @@ let process_row_validate row_num = function
       let () = col_num := !col_num + 1 in
       Process.do_col_optional_optional (row_num, !col_num) (xs $ !col_num) col_t ~skip_validate:false in
 
-    let* _id = do_col' col_id in
+    let* theId = do_col' col_id in
     let uuid = Util.mk_random_uuid () in
     let* naam_organisatie = do_col' col_naam_organisatie in
     let* categories = Rresult.R.map normalize_categories (do_col_non_empty_list' col_categories) in
@@ -184,6 +184,8 @@ let process_row_validate row_num = function
     let* telefoon_fin_aanvragen = do_col_optional' col_telefoon_fin_aanvragen in
     let* trefwoorden = Rresult.R.map normalize_trefwoorden (do_col' col_trefwoorden) in
     Ok (Fonds {
+        id = theId;
+        idx = row_num + 1;
         uuid;
         naam_organisatie;
         categories;
