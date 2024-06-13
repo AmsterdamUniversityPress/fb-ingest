@@ -63,6 +63,7 @@ let rsin_to_yojson x = fix_json_variant rsin_to_yojson x
 
 type directeur_algemeen = DirecteurAlgemeen of string
 [@@deriving yojson]
+let directeur_algemeen_to_yojson x = fix_json_variant directeur_algemeen_to_yojson x
 
 let mk_person_option (kind, row_num, col_num) mk geslacht voorletters tussenvoegsel achternaam =
   let args = [geslacht; voorletters; tussenvoegsel; achternaam] in
@@ -340,8 +341,6 @@ let type_organisatie_to_yojson x = fix_json_variant type_organisatie_to_yojson x
 
 type fonds = Fonds of {
   id: id;
-  (* --- this is the row position in the CSV, starting at 1. This is not intended as a long-term solution, but is needed now to be able to match with the fonds images, which are numbered this way. *)
-  idx: int;
   uuid: string;
   naam_organisatie: naam_organisatie;
   categories: categorie list;

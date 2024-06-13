@@ -185,7 +185,6 @@ let process_row_validate row_num = function
     let* trefwoorden = Rresult.R.map normalize_trefwoorden (do_col' col_trefwoorden) in
     Ok (Fonds {
         id = theId;
-        idx = row_num + 1;
         uuid;
         naam_organisatie;
         categories;
