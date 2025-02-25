@@ -4,20 +4,21 @@ let reword_error_msg f = function
 
 let validate_and_mk pattern s mk =
   (* --- `re` doesn't seem to have the X flag, so we strip spaces (but not comments) manually *)
-  let pattern' = Util.String.strip_spaces pattern in
-  let re' = Re.Perl.compile_pat ~opts:[`Multiline] pattern' in
-  match Re.exec_opt re' s with
-  | None -> Error (`Msg (Fmt.str "\n  patt = %s\n  target = %s\n\n" pattern s))
-  | Some m ->
-    let m0 = Re.Group.get m 0 in
-    (* let m_all = Re.Group.all m in *)
+  (* (<star>UCP) is a special marker recognized by libpcre, meaning that we want to enable Unicode property matching.
+   * We need this so that \w matches all Unicode letters and numbers (\w becomes the union of \p{L} and \p{N}) *)
+  let pattern' = "(*UCP)" ^ Util.String.strip_spaces pattern in
+  try
+    let rex = Pcre.regexp ~flags:[`UTF8; `MULTILINE] pattern' in
+    let subs = Pcre.exec ~rex s in
+    let m0 = Pcre.get_substring subs 0 in
     Ok begin match mk with
     | `Bool f -> f (Types.bool_of_string_nl m0)
     | `Int f -> f (int_of_string m0)
     | `Text f -> f m0
     (* | `Text' f -> f m_all *)
     | `Url f -> f (Types.mk_url m0)
-  end
+    end
+  with Not_found -> Error (`Msg (Fmt.str "\n  patt=%s\n  target=%s\n\n" pattern' s))
 
 let process (row_num, col_num) s col_name pattern mk =
   let msg' msg =
