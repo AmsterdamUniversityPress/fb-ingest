@@ -3,12 +3,11 @@ let reword_error_msg f = function
   | Error (`Msg m) -> Error (`Msg (f m))
 
 let validate_and_mk pattern s mk =
-  (* --- `re` doesn't seem to have the X flag, so we strip spaces (but not comments) manually *)
   (* (<star>UCP) is a special marker recognized by libpcre, meaning that we want to enable Unicode property matching.
    * We need this so that \w matches all Unicode letters and numbers (\w becomes the union of \p{L} and \p{N}) *)
-  let pattern' = "(*UCP)" ^ Util.String.strip_spaces pattern in
+  let pattern' = "(*UCP)" ^ pattern in
   try
-    let rex = Pcre.regexp ~flags:[`UTF8; `MULTILINE] pattern' in
+    let rex = Pcre.regexp ~flags:[`UTF8; `MULTILINE; `EXTENDED] pattern' in
     let subs = Pcre.exec ~rex s in
     let m0 = Pcre.get_substring subs 0 in
     begin match mk with
@@ -18,7 +17,6 @@ let validate_and_mk pattern s mk =
       f b
     | `Int f -> Ok (f (int_of_string m0))
     | `Text f -> Ok (f m0)
-    (* | `Text' f -> f m_all *)
     | `Url f -> Ok (f (Types.mk_url m0))
     end
   with Not_found -> Error (`Msg (Fmt.str "\n  patt=%s\n  target=%s\n\n" pattern' s))
