@@ -11,12 +11,15 @@ let validate_and_mk pattern s mk =
     let rex = Pcre.regexp ~flags:[`UTF8; `MULTILINE] pattern' in
     let subs = Pcre.exec ~rex s in
     let m0 = Pcre.get_substring subs 0 in
-    Ok begin match mk with
-    | `Bool f -> f (Types.bool_of_string_nl m0)
-    | `Int f -> f (int_of_string m0)
-    | `Text f -> f m0
+    begin match mk with
+    | `Bool f ->
+      let open Util.Rresult in
+      let+ b = Types.bool_of_string_nl m0 in
+      f b
+    | `Int f -> Ok (f (int_of_string m0))
+    | `Text f -> Ok (f m0)
     (* | `Text' f -> f m_all *)
-    | `Url f -> f (Types.mk_url m0)
+    | `Url f -> Ok (f (Types.mk_url m0))
     end
   with Not_found -> Error (`Msg (Fmt.str "\n  patt=%s\n  target=%s\n\n" pattern' s))
 

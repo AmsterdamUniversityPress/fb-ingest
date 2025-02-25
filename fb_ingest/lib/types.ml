@@ -438,11 +438,11 @@ let id x = x
 let mk_string = id
 
 let bool_of_string_nl = function
-  | "Ja" -> true
-  | "ja" -> true
-  | "Nee" -> false
-  | "nee" -> false
-  | x -> failwith (Fmt.str "Can't convert %s to bool" x)
+  | "Ja" -> Ok true
+  | "ja" -> Ok true
+  | "Nee" -> Ok false
+  | "nee" -> Ok false
+  | x -> Error (`Msg (Fmt.str "Can't convert %s to bool" x))
 
 let col_id = Column.Column {
   name = "id";
