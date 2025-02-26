@@ -163,8 +163,8 @@ type regio = Regio of string
 let regio_to_yojson x = fix_json_variant regio_to_yojson x
 
 let split_regio s =
-  let re' = Re.Perl.compile_pat "\\s*,\\s*" in
-  Re.split re' s
+  let rex = Pcre.regexp ~flags:[`UTF8] {|\s*,\s*|} in
+  Pcre.split ~rex s
 
 let mk_regios landen_opt regio_in_nederland_opt plaats_in_nederland_opt =
   let split_landen (Landen l) = split_regio l in

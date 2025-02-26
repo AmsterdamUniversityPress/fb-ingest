@@ -11,12 +11,12 @@ module String = struct
     String.to_seq s
     |> Seq.flat_map f
     |> String.of_seq
+  (* Trims both space and U000A (no-break space). *)
   let trim x =
 	let sp = "[ \u{a0}]" in
 	let p = Fmt.str "^%s*(.*?)%s*$" sp sp in
-	let re = Re.Perl.compile_pat p in
-	let f groups = Re.Group.get groups 1 in
-	Re.replace re ~f x
+    let rex = Pcre.regexp ~flags:[`UTF8] p in
+    Pcre.replace ~rex ~templ:"$1" x
 end
 
 module Option = struct
