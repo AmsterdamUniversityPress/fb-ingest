@@ -12,3 +12,5 @@
   (modules ppx_composer)
   (kind ppx_rewriter)
   (libraries ppxlib))
+
+(env (dev (flags (:standard -warn-error -A))))

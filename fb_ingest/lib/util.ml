@@ -27,10 +27,6 @@ module Option = struct
   let join_some s xs = xs |> List.filter_map id |> RealString.concat s
 end
 
-module Rresult = struct
-  let (let+) = fun a b -> Rresult.R.map b a
-end
-
 let mk_random_uuid =
   let open Uuidm in
   let rand = Random.State.make_self_init () in
