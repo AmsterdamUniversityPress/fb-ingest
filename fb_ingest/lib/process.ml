@@ -16,8 +16,3 @@ let do_col_optional_optional (row_num, col_num) value make name =
   if value = ""
   then Ok None
   else do_col (row_num, col_num) value make name
-let do_col_optional_optional (row_num, col_num) value make name =
-  if value = ""
-  then Ok None
-  else do_col (row_num, col_num) value make name
-

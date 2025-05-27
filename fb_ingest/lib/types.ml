@@ -138,7 +138,6 @@ let mk_oprichtings_datum_r str =
 
 let oprichtings_datum_to_yojson x = fix_json_variant oprichtings_datum_to_yojson x
 
-
 let naam_moeder_organisatie_to_yojson x = fix_json_variant naam_moeder_organisatie_to_yojson x
 let mk_naam_moeder_organisatie_r str =
   str
@@ -183,13 +182,27 @@ let mk_rsin_r str =
 
 type directeur_algemeen = DirecteurAlgemeen of string
 [@@deriving yojson]
+let directeur_algemeen_to_yojson x = fix_json_variant directeur_algemeen_to_yojson x
+
+let mk_directeur_algemeen_geslacht_r str =
+  str
+  |> validate_text
+
+let mk_directeur_algemeen_voorletters_r str =
+  str
+  |> validate_text
+
+let mk_directeur_algemeen_tussenvoegsel_r str =
+  str
+  |> validate_text
+
+let mk_directeur_algemeen_achternaam_r str =
+  str
+  |> validate_text
 
 let mk_directeur_algemeen_r str =
   str
   |> validate_text
-  |> Result.map (fun str -> DirecteurAlgemeen str)
-
-let directeur_algemeen_to_yojson x = fix_json_variant directeur_algemeen_to_yojson x
 
 let mk_person_option (kind, row_num, col_num) mk geslacht voorletters tussenvoegsel achternaam =
   let args = [geslacht; voorletters; tussenvoegsel; achternaam] in
@@ -203,40 +216,56 @@ let mk_directeur_algemeen_option row_num col_num = mk_person_option ("directeur_
 
 type bestuursvoorzitter = Bestuursvoorzitter  of string
 [@@deriving yojson]
+
+let mk_bestuursvoorzitter_geslacht_r str = str |> validate_text
+let mk_bestuursvoorzitter_voorletters_r str = str |> validate_text
+let mk_bestuursvoorzitter_tussenvoegsel_r str = str |> validate_text
+let mk_bestuursvoorzitter_achternaam_r str = str |> validate_text
+
 let mk_bestuursvoorzitter_option row_num col_num = mk_person_option ("bestuursvoorzitter", row_num, col_num) (fun x -> Bestuursvoorzitter x)
 let bestuursvoorzitter_to_yojson x = fix_json_variant bestuursvoorzitter_to_yojson x
 
 type bestuurssecretaris = Bestuurssecretaris of string
 [@@deriving yojson]
+let bestuurssecretaris_to_yojson = fix_json_variant bestuurssecretaris_to_yojson
+
+let mk_bestuurssecretaris_geslacht_r str = str |> validate_text
+let mk_bestuurssecretaris_voorletters_r str = str |> validate_text
+let mk_bestuurssecretaris_tussenvoegsel_r str = str |> validate_text
+let mk_bestuurssecretaris_achternaam_r str = str |> validate_text
+
 let mk_bestuurssecretaris_option row_num col_num = mk_person_option ("bestuurssecretaris", row_num, col_num) (fun x -> Bestuurssecretaris x)
 
 type bestuurspenningmeester = Bestuurspenningmeester of string
 [@@deriving yojson]
 
-let mk_bestuurspenningmeester_r str =
-  str
-  |> validate_text
-  |> Result.map (fun str -> Bestuurspenningmeester str)
+let mk_bestuurspenningmeester_geslacht_r str = str |> validate_text
+let mk_bestuurspenningmeester_voorletters_r str = str |> validate_text
+let mk_bestuurspenningmeester_tussenvoegsel_r str = str |> validate_text
+let mk_bestuurspenningmeester_achternaam_r str = str |> validate_text
+
+let mk_bestuurspenningmeester_option row_num col_num = mk_person_option ("bestuurspenningmeester", row_num, col_num) (fun x -> Bestuurspenningmeester x)
 
 let bestuurspenningmeester_to_yojson x = fix_json_variant bestuurspenningmeester_to_yojson x
 
 type bestuurslid = Bestuurslid of string
 [@@deriving yojson]
+
+let mk_bestuurslid_geslacht_r str = str |> validate_text
+let mk_bestuurslid_voorletters_r str = str |> validate_text
+let mk_bestuurslid_tussenvoegsel_r str = str |> validate_text
+let mk_bestuurslid_achternaam_r str = str |> validate_text
+
 let mk_bestuurslid_option row_num col_num = mk_person_option ("bestuurslid", row_num, col_num) (fun x -> Bestuurslid x)
+
 let bestuurslid_to_yojson x = fix_json_variant bestuurslid_to_yojson x
-
-let mk_bestuurssecretaris_r str =
-  str
-  |> validate_text
-  |> Result.map (fun str -> Bestuurssecretaris str)
-
-let bestuurssecretaris_to_yojson x = fix_json_variant bestuurssecretaris_to_yojson x
 
 type doelstelling = Doelstelling of string
 [@@deriving yojson]
 
 let mk_doelstelling_r str =
   str
+  |> String.trim
   |> validate_text
   |> Result.map (fun str -> Doelstelling str)
 
@@ -247,6 +276,7 @@ type stichter = Stichter of string
 
 let mk_stichter_r str =
   str
+  |> String.trim
   |> validate_text
   |> Result.map (fun str -> Stichter str)
 
@@ -257,6 +287,7 @@ type historie = Historie of string
 
 let mk_historie_r str =
   str
+  |> String.trim
   |> validate_text
   |> Result.map (fun str -> Historie str)
 
@@ -266,14 +297,12 @@ type beleidsplan_op_website = BeleidsplanOpWebsite of bool
 [@@deriving yojson]
 
 let mk_beleidsplan_op_website_r str =
-  str
-  |> validate_bool
-  |> Result.map (fun str -> BeleidsplanOpWebsite bool_of_string (str))
+  let* str' = validate_bool str in
+  str'
+  |> bool_of_string_nl
+  |> Result.map (fun b -> BeleidsplanOpWebsite b)
 
 let beleidsplan_op_website_to_yojson x = fix_json_variant beleidsplan_op_website_to_yojson x
-
-
-
 
 type doelgroep = Doelgroep of string
 [@@deriving yojson]
@@ -281,7 +310,7 @@ type doelgroep = Doelgroep of string
 let mk_doelgroep_r str =
   str
   |> validate_text
-  |> Result.map (fun str -> Doelgroep str)
+  |> Result.map (fun str -> Some (Doelgroep str))
 
 let doelgroep_to_yojson x = fix_json_variant doelgroep_to_yojson x
 
@@ -290,6 +319,7 @@ type doelgroep_overig = DoelgroepOverig of string
 
 let mk_doelgroep_overig_r str =
   str
+  |> String.trim
   |> validate_text
   |> Result.map (fun str -> DoelgroepOverig str)
 
@@ -300,6 +330,7 @@ type activiteiten_beschrijving = ActiviteitenBeschrijving of string
 
 let mk_activiteiten_beschrijving_r str =
   str
+  |> String.trim
   |> validate_text
   |> Result.map (fun str -> ActiviteitenBeschrijving str)
 
@@ -314,7 +345,6 @@ let mk_interventie_niveau_r str =
   |> Result.map (fun str -> InterventieNiveau str)
 
 let interventie_niveau_to_yojson x = fix_json_variant interventie_niveau_to_yojson x
-  interventie_niveau: interventie_niveau option;
 
 type werk_regio = WerkRegio of string
 [@@deriving yojson]
@@ -336,16 +366,16 @@ let mk_landen_r str =
 
 let landen_to_yojson x = fix_json_variant landen_to_yojson x
 
-  type regio_in_nederland = RegioInNederland of string
-  [@@deriving yojson]
-  
-  let mk_regio_in_nederland_r str =
-    str
-    |> validate_text
-    |> Result.map (fun str -> RegioInNederland str)
-  
-  let regio_in_nederland_to_yojson x = fix_json_variant regio_in_nederland_to_yojson x
-  
+type regio_in_nederland = RegioInNederland of string
+[@@deriving yojson]
+let mk_regio_in_nederland_r str =
+  str
+  |> String.trim
+  |> validate_text
+  |> Result.map (fun str -> RegioInNederland str)
+
+let regio_in_nederland_to_yojson x = fix_json_variant regio_in_nederland_to_yojson x
+
 type plaats_in_nederland = PlaatsInNederland of string
 [@@deriving yojson]
 
@@ -355,7 +385,6 @@ let mk_plaats_in_nederland_r str =
   |> Result.map (fun str -> PlaatsInNederland str)
 
 let plaats_in_nederland_to_yojson x = fix_json_variant plaats_in_nederland_to_yojson x
-  plaats_in_nederland: plaats_in_nederland option;
 
 (* --- regio is a combination of landen, regio_in_nederland, plaats_in_nederland *)
 type regio = Regio of string
@@ -435,6 +464,7 @@ type beschrijving_project_aanmerking = BeschrijvingProjectAanmerking of string
 
 let mk_beschrijving_project_aanmerking_r str =
   str
+  |> String.trim
   |> validate_text
   |> Result.map (fun str -> BeschrijvingProjectAanmerking str)
 
@@ -459,25 +489,26 @@ let mk_fonds_type_aanvraag_r str =
   |> Result.map (fun str -> FondsTypeAanvraag str)
 
 let fonds_type_aanvraag_to_yojson x = fix_json_variant fonds_type_aanvraag_to_yojson x
-  fonds_type_aanvraag: fonds_type_aanvraag option;
 
 type uitsluiting = Uitsluiting of string
 [@@deriving yojson]
 
 let mk_uitsluiting_r str =
   str
+  |> String.trim
   |> validate_text
   |> Result.map (fun str -> Uitsluiting str)
 
 let uitsluiting_to_yojson x = fix_json_variant uitsluiting_to_yojson x
 
-type op_aanvraag = OpAanvraag of string
+type op_aanvraag = OpAanvraag of bool
 [@@deriving yojson]
 
 let mk_op_aanvraag_r str =
-  str
-  |> validate_text
-  |> Result.map (fun str -> OpAanvraag str)
+  let* str' = validate_bool str in
+  str'
+  |> bool_of_string_nl
+  |> Result.map (fun b -> OpAanvraag b)
 
 let op_aanvraag_to_yojson x = fix_json_variant op_aanvraag_to_yojson x
 
@@ -496,6 +527,7 @@ type aanvraag_procedure = AanvraagProcedure of string
 
 let mk_aanvraag_procedure_r str =
   str
+  |> String.trim
   |> validate_text
   |> Result.map (fun str -> AanvraagProcedure str)
 
@@ -506,7 +538,7 @@ type url_aanvraag_procedure = UrlAanvraagProcedure of Url.t
 
 let mk_url_aanvraag_procedure_r str =
   str
-  |> validate_url
+  |> validate_text
   |> Result.map (fun str ->
       str
       |> mk_url
@@ -581,75 +613,26 @@ let mk_contact_r str =
 
 let contact_to_yojson x = fix_json_variant contact_to_yojson x
 
+let mk_cpiaanvragen_geslacht_r str = str |> validate_text
+let mk_cpiaanvragen_voorletters_r str = str |> validate_text
+let mk_cpiaanvragen_tussenvoegsel_r str = str |> validate_text
+let mk_cpiaanvragen_achternaam_r str = str |> validate_text
+
 type cpfinaanvragen = Cpfinaanvragen of string
 [@@deriving yojson]
 
-let mk_cpfinaanvragen_r str =
-  str
-  |> validate_text
-  |> Result.map (fun str -> Cpfinaanvragen str)
+let mk_cpfinaanvragen_option row_num col_num = mk_person_option ("cpfinaanvragen", row_num, col_num) (fun x -> Cpfinaanvragen x)
 
 let cpfinaanvragen_to_yojson x = fix_json_variant cpfinaanvragen_to_yojson x
-  cpfinaanvragen: cpfinaanvragen option;
 
-
-type postadres_straat = Postadres_straat of string
-[@@deriving yojson]
-
-let mk_postadres_straat_r str =
-  str
-  |> validate_text
-  |> Result.map (fun str -> Postadres_straat str)
-
-let postadres_straat_to_yojson x = fix_json_variant postadres_straat_to_yojson x
-
-type postadres_huisnummer = Postadres_huisnummer of int
-[@@deriving yojson]
-
-let mk_postadres_huisnummer_r str =
-  str
-  |> validate_int
-  |> Result.map (fun i -> Postadres_huisnummer (int_of_string i))
-
-let postadres_huisnummer_to_yojson x = fix_json_variant postadres_huisnummer_to_yojson x
-
-type postadres_huisnummer_ext = Postadres_huisnummer_ext of string
-[@@deriving yojson]
-
-let mk_postadres_huisnummer_ext_r str =
-  str
-  |> validate_text
-  |> Result.map (fun str -> Postadres_huisnummer_ext str)
-
-let postadres_huisnummer_ext_to_yojson x = fix_json_variant postadres_huisnummer_ext_to_yojson x
-
-type postadres_postcode = Postadres_postcode of string
-[@@deriving yojson]
-
-let mk_postadres_postcode_r str =
-  str
-  |> validate_text
-  |> Result.map (fun str -> Postadres_postcode str)
-
-let postadres_postcode_to_yojson x = fix_json_variant postadres_postcode_to_yojson x
-
-type postadres_plaats = Postadres_plaats of string
-[@@deriving yojson]
-
-let mk_postadres_plaats_r str =
-  str
-  |> validate_text
-  |> Result.map (fun str -> Postadres_plaats str)
-
-let postadres_plaats_to_yojson x = fix_json_variant postadres_plaats_to_yojson x
+let mk_postadres_straat_r str = str |> validate_text
+let mk_postadres_huisnummer_r str = str |> validate_text
+let mk_postadres_huisnummer_ext_r str = str |> validate_text
+let mk_postadres_postcode_r str = str |> validate_text
+let mk_postadres_plaats_r str = str |> validate_text
 
 type postadres = Postadres of string
 [@@deriving yojson]
-
-let mk_postadres_r str =
-  str
-  |> validate_text
-  |> Result.map (fun str -> Postadres str)
 
 let postadres_to_yojson x = fix_json_variant postadres_to_yojson x
 
@@ -711,6 +694,8 @@ let mk_trefwoorden_r str =
       str
       |> String.split_on_char ','
       |> List.map (fun s -> Trefwoord (String.trim s)))
+
+let map_trefwoord f (Trefwoord t) = Trefwoord (f t)
 
 let trefwoord_to_yojson x = fix_json_variant trefwoord_to_yojson x
 
