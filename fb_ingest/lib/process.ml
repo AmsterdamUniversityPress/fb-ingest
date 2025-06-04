@@ -12,6 +12,11 @@ let do_col_optional (row_num, col_num) value make name =
     let ret = do_col (row_num, col_num) value make name in
     Result.map (fun r -> Some r) ret
 
+let do_col_list (row_num, col_num) value make name =
+  if value = ""
+  then Ok []
+  else do_col (row_num, col_num) value make name
+
 let do_col_optional_optional (row_num, col_num) value make name =
   if value = ""
   then Ok None

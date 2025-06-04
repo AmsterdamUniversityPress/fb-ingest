@@ -24,6 +24,9 @@ let process_row_validate row_num = function
     let do_col' make name =
       let () = col_num := !col_num + 1 in
       Process.do_col (row_num, !col_num) (xs $ !col_num) make name in
+    let do_col_list' make name =
+      let () = col_num := !col_num + 1 in
+      Process.do_col_list (row_num, !col_num) (xs $ !col_num) make name in
     let do_col_non_empty_list' make name =
       let () = col_num := !col_num + 1 in
       let* res = Process.do_col (row_num, !col_num) (xs $ !col_num) make name in
@@ -55,8 +58,8 @@ let process_row_validate row_num = function
     let* penningmeester = do_col_optional' mk_penningmeester_r "penningmeester" in
     let* doelstelling = do_col_optional' mk_doelstelling_r "doelstelling" in
     let* doelgroep = do_col_optional' mk_doelgroep_r "doelgroep" in
-    let* activititeiten = do_col_optional' mk_activititeiten_r "activititeiten" in
-    let* werkterrein_geografisch = do_col_optional' mk_werkterrein_geografisch_r "werkterrein_geografisch" in
+    let* activiteiten = do_col_optional' mk_activiteiten_r "activiteiten" in
+    let* werkterreinen_geografisch = do_col_list' mk_werkterreinen_geografisch_r "werkterrein_geografisch" in
     let* contact = do_col_optional' mk_contact_r "contact" in
     let* aanvraagprocedure = do_col_optional' mk_aanvraagprocedure_r "contact" in
     let* postadres_straat = do_col_optional' mk_postadres_straat_r "postadres_straat" in
@@ -64,6 +67,13 @@ let process_row_validate row_num = function
     let* postadres_huisnummer_ext = do_col_optional' mk_postadres_huisnummer_ext_r "postadres_huisnummer_ext" in
     let* postadres_postcode = do_col_optional' mk_postadres_postcode_r "postadres_postcode" in
     let* postadres_plaats = do_col_optional' mk_postadres_plaats_r "postadres_plaats" in
+    let postadres = mk_postadres_option
+        (row_num, !col_num)
+        postadres_straat
+        postadres_huisnummer
+        postadres_huisnummer_ext
+        postadres_postcode
+        postadres_plaats in
     let* email = do_col_optional' mk_email_r "email" in
     let* telefoon = do_col_optional' mk_telefoon_r "telefoon" in
     let* trefwoorden = do_col_non_empty_list' mk_trefwoorden_r "trefwoorden" in
@@ -94,15 +104,11 @@ let process_row_validate row_num = function
         penningmeester;
         doelstelling;
         doelgroep;
-        activititeiten;
-        werkterrein_geografisch;
+        activiteiten;
+        werkterreinen_geografisch;
         contact;
         aanvraagprocedure;
-        postadres_straat;
-        postadres_huisnummer;
-        postadres_huisnummer_ext;
-        postadres_postcode;
-        postadres_plaats;
+        postadres;
         email;
         telefoon;
         trefwoorden;

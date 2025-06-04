@@ -186,6 +186,7 @@ let mk_bestuursvoorzitter_r str =
   str
   |> validate_text
   |> Result.map (fun str -> Bestuursvoorzitter str)
+let bestuursvoorzitter_to_yojson x = fix_json_variant bestuursvoorzitter_to_yojson x
 
 type bestuurssecretaris = Bestuurssecretaris of string
 [@@deriving yojson]
@@ -228,23 +229,26 @@ let mk_doelgroep_r str =
 
 let doelgroep_to_yojson x = fix_json_variant doelgroep_to_yojson x
 
-type activititeiten = Activititeiten of string
+type activiteiten = Activiteiten of string
 [@@deriving yojson]
 
-let mk_activititeiten_r str =
+let mk_activiteiten_r str =
   str
   |> validate_text
-  |> Result.map (fun str -> Activititeiten str)
+  |> Result.map (fun str -> Activiteiten str)
 
-let activititeiten_to_yojson x = fix_json_variant activititeiten_to_yojson x
+let activiteiten_to_yojson x = fix_json_variant activiteiten_to_yojson x
 
 type werkterrein_geografisch = Werkterrein_geografisch of string
 [@@deriving yojson]
 
-let mk_werkterrein_geografisch_r str =
+let mk_werkterreinen_geografisch_r str =
   str
   |> validate_text
-  |> Result.map (fun str -> Werkterrein_geografisch str)
+  |> Result.map (fun str ->
+      str
+      |> String.split_on_char ';'
+      |> List.map (fun s -> Werkterrein_geografisch (String.trim s)))
 
 let werkterrein_geografisch_to_yojson x = fix_json_variant werkterrein_geografisch_to_yojson x
 
@@ -258,55 +262,34 @@ let mk_contact_r str =
 
 let contact_to_yojson x = fix_json_variant contact_to_yojson x
 
-type postadres_straat = Postadres_straat of string
+let mk_postadres_straat_r str = str |> validate_text
+let mk_postadres_huisnummer_r str = str |> validate_int
+let mk_postadres_huisnummer_ext_r str = str |> validate_text
+let mk_postadres_postcode_r str = str |> validate_text
+let mk_postadres_plaats_r str = str |> validate_text
+
+type postadres = Postadres of string
 [@@deriving yojson]
 
-let mk_postadres_straat_r str =
-  str
-  |> validate_text
-  |> Result.map (fun str -> Postadres_straat str)
+let postadres_to_yojson = fix_json_variant postadres_to_yojson
 
-let postadres_straat_to_yojson x = fix_json_variant postadres_straat_to_yojson x
-
-type postadres_huisnummer = Postadres_huisnummer of int
-[@@deriving yojson]
-
-let mk_postadres_huisnummer_r str =
-  str
-  |> validate_int
-  |> Result.map (fun i -> Postadres_huisnummer (int_of_string i))
-
-let postadres_huisnummer_to_yojson x = fix_json_variant postadres_huisnummer_to_yojson x
-
-type postadres_huisnummer_ext = Postadres_huisnummer_ext of string
-[@@deriving yojson]
-
-let mk_postadres_huisnummer_ext_r str =
-  str
-  |> validate_text
-  |> Result.map (fun str -> Postadres_huisnummer_ext str)
-
-let postadres_huisnummer_ext_to_yojson x = fix_json_variant postadres_huisnummer_ext_to_yojson x
-
-type postadres_postcode = Postadres_postcode of string
-[@@deriving yojson]
-
-let mk_postadres_postcode_r str =
-  str
-  |> validate_text
-  |> Result.map (fun str -> Postadres_postcode str)
-
-let postadres_postcode_to_yojson x = fix_json_variant postadres_postcode_to_yojson x
-
-type postadres_plaats = Postadres_plaats of string
-[@@deriving yojson]
-
-let mk_postadres_plaats_r str =
-  str
-  |> validate_text
-  |> Result.map (fun str -> Postadres_plaats str)
-
-let postadres_plaats_to_yojson x = fix_json_variant postadres_plaats_to_yojson x
+let mk_postadres_option (row_num, col_num) straat huisnummer huisnummer_ext postcode plaats =
+  let warn' s = Fmt.epr "Warning: %s, row_num=%d, col_num=%d, skipping row@." s row_num col_num in
+  let args = [straat; huisnummer; huisnummer_ext; postcode; plaats] in
+  if Util.Option.all_none args then None
+  else if Option.(is_some huisnummer_ext && is_none huisnummer) then
+    let () = warn' (Fmt.str "Invalid huisnummer/huisnummer_ext combination, straat was %a" (Fmt.(option string)) straat) in
+    None
+  else match List.find_opt Option.is_none [straat; huisnummer; postcode; plaats] with
+    | Some _ -> let () = warn' (Fmt.str "Missing postadres_xxx fields") in None
+    | None ->
+      (* --- @todo kan mooier *)
+      let huisnummer' = Util.Option.join_some "" [huisnummer; huisnummer_ext] in
+      let huisnummer'' = match huisnummer' with
+        | "" -> None
+        | x -> Some x in
+      let args' = [straat; huisnummer''; postcode; plaats] in
+      Some (Postadres (Util.Option.join_some " " args'))
 
 type email = Email of string
 [@@deriving yojson]
@@ -335,7 +318,7 @@ let mk_trefwoorden_r str =
   |> validate_text
   |> Result.map (fun str ->
       str
-      |> String.split_on_char ','
+      |> String.split_on_char ';'
       |> List.map (fun s -> Trefwoord (String.trim s)))
 
 let trefwoord_to_yojson x = fix_json_variant trefwoord_to_yojson x
@@ -449,15 +432,11 @@ type fonds = Fonds of {
   penningmeester: penningmeester option;
   doelstelling: doelstelling option;
   doelgroep: doelgroep option;
-  activititeiten: activititeiten option;
-  werkterrein_geografisch: werkterrein_geografisch option;
+  activiteiten: activiteiten option;
+  werkterreinen_geografisch: werkterrein_geografisch list;
   aanvraagprocedure: aanvraagprocedure option;
   contact: contact option;
-  postadres_straat: postadres_straat option;
-  postadres_huisnummer: postadres_huisnummer option;
-  postadres_huisnummer_ext: postadres_huisnummer_ext option;
-  postadres_postcode: postadres_postcode option;
-  postadres_plaats: postadres_plaats option;
+  postadres: postadres option;
   email: email option;
   telefoon: telefoon option;
   trefwoorden: trefwoord list;
